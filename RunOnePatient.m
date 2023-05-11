@@ -1,5 +1,6 @@
 % Input patient ID and select options to process images
 clear all
+Folder='RawImages\';            % Folder with raw images
 Patient='102-003-105';                                                 % Select patient ID (see paper for available IDs)                                                            
     
 Options.DoDWI=1;                                                        % Select this option to process DW-MRI images
@@ -49,5 +50,5 @@ Options.DoT1WDWIReg=0;
     Options.RotateViewDW=[];             
 
 disp(Patient)
-Main(Patient, Options)
+Main(Patient, Folder, Options)
 

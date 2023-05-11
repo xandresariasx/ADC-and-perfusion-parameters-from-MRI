@@ -49,5 +49,5 @@ Options.DoT1WDWIReg=0;
     Options.RotateViewDW=[];             
 
 disp(Patient)
-MainP3(Patient, Options)
+Main(Patient, Options)
 

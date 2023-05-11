@@ -19,7 +19,7 @@ Folder_DCE=['(T1_vibe)|(AX 3D DCE 30 \+C)|'...
     '(3d PRE\/POST  RSSG  30fa)|(^DCE 30 WITH CONTRAST)|(Ax 3D SPGR T1 30)|(TI WI 30 DCE \+C)|(^(?=.*DYNAMIC_fl3d_ce-1-fa)(?!.*(PosDisp)).*)'];
 
 if exist([Folder PatientName])~=0
-    Dates=AdjustDirVariable(dir([Folder PatientName]) ); 
+    Dates=AdjustDirVariable(dir([Folder PatientName])); 
     Dates=Dates([Dates(:).isdir]);
     Dates={Dates.name};
 end

@@ -1,6 +1,7 @@
 % Input patient ID and select options to process images
 clear all
 Folder='RawImages\';            % Folder with raw images
+WriteFolder='Images\';          % Folder to write processed data
 Patient='102-003-105';                                                 % Select patient ID (see paper for available IDs)                                                            
     
 Options.DoDWI=1;                                                        % Select this option to process DW-MRI images

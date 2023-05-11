@@ -1,62 +1,15 @@
-function MainP3(PatientName, Options)
-
-if ~exist('Options')
-UseNetworkMasks=0;
+function Main(PatientName, Options)
+% Main file to process one patient
     
-DoDWI=0;
-CurateDWI=0;
-    BiasCorrectDWI=0;
-AnnotateDWI=0;
-GlobalRegisterDWI=0;
-LocalRegisterDWI=1;
-    roiFactorDW=2;
-GetParDWI=1;
-GlobalDateRegisterDWI=1;
-LocalDateRegisterDWI=1;
-    roiFactorLDW=3;
-    UseSegmentationForLocalRegDWI=1;
-DoT1W=1;
-CurateT1W=0;
-    BiasCorrectT1=0;
-AnnotateT1W=0;
-GlobalRegisterT1W=0;
-SpetialRegT1=0;
-LocalRegisterT1W=0;
-    roiFactorT1=2;                      % 3;
-    IncludeArteryLR=1;
-GetT1=1;
-    AirTh=0.035;                         % <0.04
-    ScaleT1Ims=1;
-    RefTiss='Liver';
-    gammaT1 = 5e-5;                     % 5e-5;
-    gammaM0 = 5e-5;                     % 5e-5;
-    solver    = 'MatlabInternal';            % 'MatlabInternal'  'pcg';
-    CorrectBiasBetweenSlices=0;
-    AssumeT1s=0;
-    CorrectFA=0;
-GetConc=0;
-    ContrastBrand='Magnevist';
-    ScaleMo=0;
-GetPar=0;
-GlobalDateRegisterT1=0;
-LocalDateRegisterT1=0;
-    roiFactorLT1=2;                     % 4 
-    UseSegmentationForLocalRegT1=1;     % 1
-DoT1WDWIReg=0;
-    roiFactorLT1DW=2;
-    RotateViewDW=[];             % [],'AxToCor'
-    
-else
-    
-    [UseNetworkMasks,DoDWI,CurateDWI,BiasCorrectDWI,AnnotateDWI,...
+[UseNetworkMasks,DoDWI,CurateDWI,BiasCorrectDWI,AnnotateDWI,...
     GlobalRegisterDWI,LocalRegisterDWI,roiFactorDW,GetParDWI,GlobalDateRegisterDWI,...
     LocalDateRegisterDWI,roiFactorLDW,UseSegmentationForLocalRegDWI,DoT1W,...
     CurateT1W,BiasCorrectT1,AnnotateT1W,GlobalRegisterT1W,SpetialRegT1,LocalRegisterT1W,...
     roiFactorT1,IncludeArteryLR,GetT1,CorrectFA,WeightT1,AirTh,ScaleT1Ims,RefTiss,gammaT1,gammaM0,...
     solver,CorrectBiasBetweenSlices,AssumeT1s,GetConc,ContrastBrand,ScaleMo,AssumeT1sC,AssumeT1Artery,GetPar,...
     GlobalDateRegisterT1,LocalDateRegisterT1,roiFactorLT1,UseSegmentationForLocalRegT1,...
-    DoT1WDWIReg,roiFactorLT1DW,RotateViewDW]=LoadMainP3Options(Options);
-end
+    DoT1WDWIReg,roiFactorLT1DW,RotateViewDW]=LoadMainOptions(Options);
+
 
 FolderDWI='(^(?=.*diff)(?!.*(Apparent|Exponential|PosDisp)).*)|(Axial(.*)DWI)|(Ax(.*)DWI)';
 Folder_T1=['(PRE T1_vibe)|((AX 3D)(((?!(SPGR|DCE)).)*$))|'...

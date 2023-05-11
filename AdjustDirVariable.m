@@ -1,5 +1,5 @@
 function dir2=AdjustDirVariable(dir2)
-
+% Function to discard empty folders in a directory variable
 I3=1;
 while I3<=length(dir2)    
     if isequal(dir2(I3).name,'.') || isequal(dir2(I3).name,'..')

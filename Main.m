@@ -1,4 +1,4 @@
-function Main(PatientName, Folder, Options)
+function Main(PatientName, Folder, WriteFolder, Options)
 % Main file to process one patient
     
 [DoDWI,CurateDWI,BiasCorrectDWI,AnnotateDWI,...
@@ -23,8 +23,6 @@ if exist([Folder PatientName])~=0
     Dates=Dates([Dates(:).isdir]);
     Dates={Dates.name};
 end
-
-WriteFolder='C:\Users\Andres\Desktop\Moffitt\Images\'; 
 
 if exist('Dates','var')==0
     [~,~,RAW]=xlsread('C:\Users\Andres\Desktop\Moffitt\MATLAB\Project3\TableCurationV5.xls');

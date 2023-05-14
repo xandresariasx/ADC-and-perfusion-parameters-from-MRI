@@ -9,9 +9,7 @@ if isempty(aux)
 end
 Templates=cellfun(@SelectMinB, aux,'UniformOutput',false);
 aux2=sort({Foldersb(:).name});
-if isempty(res)
-    res=1;
-end
+res=1;
 TemplateDate=aux2{res};
 LocalRegTemplate=['b=' Templates{res} '_' TemplateDate(3:end)];
 

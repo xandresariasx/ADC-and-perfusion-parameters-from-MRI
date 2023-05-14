@@ -148,27 +148,6 @@ end
 if ~isempty(RM)
     disp(['Automatically discarded volumes: ' num2str(RM)])
 end
-kdisc=str2num(input('Discard Other Volumes? ','s'));
-kdisc=unique([kdisc RM]);
-aux5=aux2(kdisc);
-
-if ~isempty(aux5)
-    arrayfun(@(x) rmdir([x.folder '\' x.name '\'],'s'), aux5,'UniformOutput',false);
-    arrayfun(@(x) rmdir([x.folder '\Processed\Registered\' x.name '\'],'s'), aux5,'UniformOutput',false);  
-    Foldersb=AdjustDirVariable(dir([WriteFolder PatientName '\DWI\' Date])); 
-    aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder '\' x.name ])), Foldersb,'UniformOutput',false);    
-    aux2=vertcat(aux{:}); 
-    [aux7,~,aux9]=unique({aux2(:).folder});
-    aux10=hist(aux9,[1:max(aux9)]);
-    aux11=aux7(aux10==1);
-    if ~isempty(aux11)
-        cellfun(@(x) rmdir(x,'s'), aux11,'UniformOutput',false);
-    end
-end
-
-fid=fopen([WriteFolder PatientName '\DWI\' Date '\DiscardedDW.txt'],'w');
-fprintf(fid, num2str(kdisc));
-fclose(fid);
 
 
 

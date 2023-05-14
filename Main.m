@@ -54,7 +54,7 @@ if DoDWI
         I=1;
         for Date=Dates
             CurateDataDWI(WriteFolder, Infos{I},SeriesDescription{I},PatientName,Date{1},FolderDWI);
-            [Templates{I},TemplateDate{I},LocalRegTemplate{I}]=GetDW_RegistrationTemplatesP3([WriteFolder PatientName '\DWI\' Date{1}]);
+            [Templates{I},TemplateDate{I},LocalRegTemplate{I}]=GetDW_RegistrationTemplates([WriteFolder PatientName '\DWI\' Date{1}]);
             I=I+1;
         end
         if exist([WriteFolder PatientName '\DWI\'])~=0

@@ -114,12 +114,7 @@ for I=1:length(Ut1)
         for K=1:length(InfosJ)
             aux3=strsplit(InfosJ{K}.Filename,'\');        
             copyfile(InfosJ{K}.Filename,[WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\' aux3{end}])
-        end    
-        if BiasCorrect
-            system(['C:\Temp\N4\bin\Release\N4 '...
-                [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)] ' temp.mha'])
-            mhaToDicom([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\']);                      
-        end
+        end 
         copyfile([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\'],...
             [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\0_' num2str(J)  '\'])
     end

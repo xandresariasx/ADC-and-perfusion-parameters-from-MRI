@@ -1,4 +1,5 @@
-function [FilesFolderNames,Infos,SeriesDescription]=ReadPatientFilesP3(FolderBase)
+function [FilesFolderNames,Infos,SeriesDescription]=ReadPatientFiles(FolderBase)
+% Read patient files    
 
 Folder=FolderBase;
 Files=AdjustDirVariable(dir(Folder));
@@ -32,7 +33,6 @@ end
 
 
 function b=isdicom(x)
-
 try
     dicominfo(x);
     b=1;

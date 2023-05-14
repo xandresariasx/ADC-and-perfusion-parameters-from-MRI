@@ -24,23 +24,6 @@ if exist([Folder PatientName])~=0
     Dates={Dates.name};
 end
 
-if exist('Dates','var')==0
-    [~,~,RAW]=xlsread('C:\Users\Andres\Desktop\Moffitt\MATLAB\Project3\TableCurationV5.xls');
-    aux=RAW(2:end,1);
-    aux(cell2mat(cellfun(@(x) isnumeric(x),aux,'UniformOutput',false)))={' '};  
-    Ind0=find(contains(aux,PatientName));
-    IndL=find(~contains(aux(Ind0+1:end),' '),1)+Ind0-1;
-    if ~isempty(Ind0) & isempty(IndL)
-        IndL=numel(aux);
-    end    
-    Dates={RAW{Ind0+1:IndL+1,6}};   
-    Dates=cellfun(@num2str, Dates,'UniformOutput',false);
-    Dates(cell2mat(cellfun(@(x) strcmp(x,'NaN'),Dates,'UniformOutput',false)))=[];
-end
-
-Path=genpath('C:\Users\Andres\Desktop\Moffitt\MATLAB\');
-addpath(Path);
-
 [~,PCNAME]=system('hostname');
 PCNAME=PCNAME(1:end-1);
 
@@ -53,9 +36,8 @@ if exist([WriteFolder PatientName '\FilesInfo.mat'],'file')==0 | (CurateDWI & Do
     I=1;
     FilesFolderNames=[]; Infos=[]; SeriesDescription=[];
     disp('Reading files')
-    for Date=Dates
-        %[FilesFolderNames{I},Infos{I},SeriesDescription{I}]=ReadPatientFilesP3([Folder PatientName '_' Date{1} '\**\*']) ; 
-        [FilesFolderNames{I},Infos{I},SeriesDescription{I}]=ReadPatientFilesP3([Folder PatientName '\' Date{1} '\**\*']); 
+    for Date=Dates       
+        [FilesFolderNames{I},Infos{I},SeriesDescription{I}]=ReadPatientFiles([Folder PatientName '\' Date{1} '\**\*']); 
         I=I+1;
     end
     mkdir([WriteFolder PatientName])

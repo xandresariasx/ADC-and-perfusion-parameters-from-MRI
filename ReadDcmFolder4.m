@@ -1,7 +1,7 @@
 function [Vols,Files]=ReadDcmFolder4(Folder)
 
-% Similar to ReadDcmFolder3 but considers image offset and scaling
-
+% Read dicom folder
+    
 Dir=dir(Folder); 
 
 Dir=AdjustDirVariable(Dir);

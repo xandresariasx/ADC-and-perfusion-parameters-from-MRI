@@ -24,9 +24,6 @@ if exist([Folder PatientName])~=0
     Dates={Dates.name};
 end
 
-[~,PCNAME]=system('hostname');
-PCNAME=PCNAME(1:end-1);
-
 close all force
 warning off
 
@@ -62,11 +59,7 @@ if DoDWI
         end
     end       
     % Global Register DW-MRI  
-    if GlobalRegisterDWI   
-        if ~strcmp(PCNAME,'PHYTM7M2') 
-%             delete(gcp('nocreate'))
-%             parpool(5);
-        end
+    if GlobalRegisterDWI  
         disp('Global Reg. ADC')
         I=1;
         if exist([WriteFolder PatientName '\DWI\\Templates.mat'])~=0
@@ -76,26 +69,12 @@ if DoDWI
                     obj = MCC_cPatient([WriteFolder PatientName '\DWI\' Date{1}]);
                     obj.Register_Date(Templates{I},TemplateDate{I}, {'none','rigid','similarity','affine'});
                     clear obj
-                    OrganizeRegisteredDWIP3([WriteFolder PatientName '\DWI\' Date{1}],WriteFolder) 
+                    OrganizeRegisteredDWI([WriteFolder PatientName '\DWI\' Date{1}],WriteFolder) 
                 end
                 I=I+1;
             end
         end
     end
-    % Copy masks from network
-    if UseNetworkMasks
-        disp('Copying ADC masks from Network')
-        for Date=Dates
-            if exist(['M:\dept\IRAT_Research\Andres Arias\PEGPH20 2020 Results\Results\' PatientName '\DWI\Registered\'...
-                    Date{1} '\Global\Masks.mat'])~=0 
-                copyfile(['M:\dept\IRAT_Research\Andres Arias\PEGPH20 2020 Results\Results\' PatientName '\DWI\Registered\'...
-                    Date{1} '\Global\Masks.mat'],  [WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\Masks.mat'])           
-%                 if InvertMasks
-%                     InvertMarsk([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\Masks.mat'])
-%                 end
-            end
-        end
-    end 
     % Annotate DWI
     if AnnotateDWI
         disp('Annotation ADC')

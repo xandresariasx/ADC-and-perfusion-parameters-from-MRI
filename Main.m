@@ -1,7 +1,7 @@
 function Main(PatientName, Folder, WriteFolder, Options)
 % Main file to process one patient
     
-[DoDWI,CurateDWI,BiasCorrectDWI,AnnotateDWI,...
+[DoDWI,CurateDWI,AnnotateDWI,...
     GlobalRegisterDWI,LocalRegisterDWI,roiFactorDW,GetParDWI,GlobalDateRegisterDWI,...
     LocalDateRegisterDWI,roiFactorLDW,UseSegmentationForLocalRegDWI,DoT1W,...
     CurateT1W,BiasCorrectT1,AnnotateT1W,GlobalRegisterT1W,SpetialRegT1,LocalRegisterT1W,...
@@ -50,11 +50,10 @@ end
 if DoDWI
     % Curate DW-MRI    
     if CurateDWI
-        try, rmdir([WriteFolder PatientName '\DWI\'],'s');  end 
-        
+        try, rmdir([WriteFolder PatientName '\DWI\'],'s');  end         
         I=1;
         for Date=Dates
-            CurateDataDWIP3V3(WriteFolder, Infos{I},SeriesDescription{I},PatientName,Date{1},FolderDWI,BiasCorrectDWI);
+            CurateDataDWI(WriteFolder, Infos{I},SeriesDescription{I},PatientName,Date{1},FolderDWI);
             [Templates{I},TemplateDate{I},LocalRegTemplate{I}]=GetDW_RegistrationTemplatesP3([WriteFolder PatientName '\DWI\' Date{1}]);
             I=I+1;
         end

@@ -1,5 +1,4 @@
-function OrganizeRegisteredDWIP3(Folder,WriteFolder)
-
+function OrganizeRegisteredDWI(Folder,WriteFolder)
 
 ImagesDate=AdjustDirVariable(dir(Folder));
 

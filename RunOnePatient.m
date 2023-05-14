@@ -2,7 +2,7 @@
 clear all
 Folder='RawImages\';            % Folder with raw images
 WriteFolder='Images\';          % Folder to write processed data
-Patient='102-003-105';                                                 % Select patient ID (see paper for available IDs)                                                            
+Patient='101-002-106';                                                 % Select patient ID (see paper for available IDs)                                                            
     
 Options.DoDWI=1;                                                        % Select this option to process DW-MRI images
 Options.CurateDWI=1;                                                  %
@@ -51,5 +51,5 @@ Options.DoT1WDWIReg=0;
     Options.RotateViewDW=[];             
 
 disp(Patient)
-Main(Patient, Folder, Options)
+Main(Patient, Folder, WriteFolder, Options)
 

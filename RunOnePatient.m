@@ -5,8 +5,7 @@ WriteFolder='Images\';          % Folder to write processed data
 Patient='101-002-106';                                                 % Select patient ID (see paper for available IDs)                                                            
     
 Options.DoDWI=1;                                                        % Select this option to process DW-MRI images
-Options.CurateDWI=1;                                                  %
-    Options.BiasCorrectDWI=0;
+Options.CurateDWI=1;                                               
 Options.AnnotateDWI=1;
 Options.GlobalRegisterDWI=1;
 Options.LocalRegisterDWI=1;

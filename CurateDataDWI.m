@@ -1,40 +1,34 @@
-
-function CurateDataDWIP3V3(WriteFolder,Infos,SeriesDescription,PatientName,Date,FolderDWI,BiasCorrect) 
+function CurateDataDWI(WriteFolder,Infos,SeriesDescription,PatientName,Date,FolderDWI) 
+% Separates DW data by different b-values        
 
 clc
 disp(['Curating DW Patient: ' PatientName ' Date: ' Date])
 try
-rmdir([WriteFolder PatientName '\DWI\' Date '\'],'s');
-rmdir([WriteFolder PatientName '\DWI\Registered\' Date '\'],'s');
+        rmdir([WriteFolder PatientName '\DWI\' Date '\'],'s');
+        rmdir([WriteFolder PatientName '\DWI\Registered\' Date '\'],'s');
 end
 
 aux2=cellfun(@(x) ~isempty(regexpi(x,FolderDWI)),...
-        SeriesDescription, 'UniformOutput', false);      % For SMIL only
+        SeriesDescription, 'UniformOutput', false);      
 
 aux2=cell2mat(aux2);
-
 InfosDWI=Infos(aux2);
 SeriesDescriptionDWI=SeriesDescription(aux2);
-
 if isempty(InfosDWI)
     return
 end
-
 % Get number of folders in Date
 IDs=cellfun(@(x) x.SeriesInstanceUID, InfosDWI, 'UniformOutput', false);  
 [Ut1,~,It1]=unique(IDs);
  
- 
 for I=1:length(Ut1)
     InfosDWIsI=InfosDWI(I==It1);
-    SeriesDescriptionDWIsI=SeriesDescriptionDWI(I==It1);
-    
+    SeriesDescriptionDWIsI=SeriesDescriptionDWI(I==It1);    
     % Find Number of Images in Folder
     Instances=cellfun(@(x) x.InstanceNumber, InfosDWIsI, 'UniformOutput', false);
     SL=cell2mat(cellfun(@(x) x.SliceLocation, InfosDWIsI, 'UniformOutput', false)); 
-    NImages=numel(Instances)/numel(unique(SL));
-    
-    % Get b factor folder  (Check!!!)
+    NImages=numel(Instances)/numel(unique(SL));    
+    % Get b factor folder  
     try
         SNames=cellfun(@(x) x.SequenceName, InfosDWIsI, 'UniformOutput', false);
         [USNames,~,ISNames]=unique(SNames);    
@@ -52,9 +46,8 @@ for I=1:length(Ut1)
         if numel(Bfact)<3
             Bfact='450';
         end
-    end   
-    
-    % for Each file identify b-factor
+    end       
+    % For Each file identify b-factor
     if numel(unique(cell2mat(Instances)))~=numel(cell2mat(Instances))
         aux1=unique(cell2mat(Instances));
         Vol1=StackImage(cellfun(@(x) dicomread(x.Filename), InfosDWIsI(1:max(aux1)),'UniformOutput' , false));  
@@ -137,65 +130,19 @@ for I=1:length(Ut1)
         for K=1:length(InfosJ)
             aux3=strsplit(InfosJ{K}.Filename,'\');        
             copyfile(InfosJ{K}.Filename,[WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\' aux3{end}])
-        end    
-        if BiasCorrect
-            system(['C:\Temp\N4\bin\Release\N4 '...
-                [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)] ' temp.mha'])
-            mhaToDicom([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\']);
-        end
+        end   
         copyfile([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\'],...
             [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\' Bfact '_' num2str(J)  '\'])
     end   
 end
 
-
-
 % Visualize images, remove some if necesary
-
 Foldersb=AdjustDirVariable(dir([WriteFolder PatientName '\DWI\' Date])); 
 aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder '\' x.name ])), Foldersb,'UniformOutput',false);    
 aux2=vertcat(aux{:});    
 aux3=arrayfun(@(x) strcmp(x.name,'Processed'), aux2);
 aux2(aux3)=[];    
 aux4=arrayfun(@(x) ReadDcmFolder4([x.folder '\' x.name '\']), aux2);
-aux6=cell2mat(aux4);
-close all force
-Fig=figure('units','normalized','outerposition',[0 0 1 1]); colormap('gray')
-for I=1:length(aux4)
-    subplot(ceil(length(aux4)/4),4,I), imagesc(aux4{I}(:,:,floor(size(aux4{I},3)/2)),...
-        [0 prctile(aux6(:),99)]) 
-    title([aux2(I).name '   (' num2str(I) ')'],'Interpreter','none')
-    axis equal
-    axis off
-end
-set (Fig, 'WindowKeyPressFcn', @KeyPressFcn);
-cont=1;
-global Stop
-Stop=0;
-while Stop==0 
-    for I=1:length(aux4)
-        if cont<=size(aux4{I},3)
-            subplot(ceil(length(aux4)/4),4,I), imagesc(aux4{I}(:,:,cont),...
-                [0 prctile(aux6(:),99)])     
-            title([aux2(I).name '   (' num2str(I) ')' '  (Slice #: ' num2str(cont) ' )'],'Interpreter','none')
-            axis equal
-            axis off    
-        end
-    end
-    pause(0.5)
-    cont=cont+1;
-    if cont>max(cellfun(@(x) size(x,3), aux4))
-        cont=1;
-    end
-end
-for I=1:length(aux4)
-    subplot(ceil(length(aux4)/4),4,I), imagesc(aux4{I}(:,:,floor(size(aux4{I},3)/2)),...
-        [0 prctile(aux6(:),99)]) 
-    title([aux2(I).name '   (' num2str(I) ')'],'Interpreter','none')
-    axis equal
-    axis off
-end
-
 aux=combnk([1:numel(aux4)],2);
 RM=[];
 for I=1:size(aux,1)
@@ -209,22 +156,6 @@ end
 kdisc=str2num(input('Discard Other Volumes? ','s'));
 kdisc=unique([kdisc RM]);
 aux5=aux2(kdisc);
-
-
-for I=1:length(aux4)
-    subplot(ceil(length(aux4)/4),4,I), imagesc(aux4{I}(:,:,floor(size(aux4{I},3)/2)),...
-        [0 prctile(aux6(:),99)]) 
-    if any(kdisc==I)
-        title([aux2(I).name '   (' num2str(I) ', REMOVED)'],'Interpreter','none')
-    else
-        title([aux2(I).name '   (' num2str(I) ')'],'Interpreter','none')
-    end
-    axis equal
-    axis off
-end
-savefig([WriteFolder PatientName '\DWI\' Date '\DWImages'])
-saveas(gcf,[WriteFolder PatientName '\DWI\' Date '\DWImages.jpeg'])
-
 
 if ~isempty(aux5)
     arrayfun(@(x) rmdir([x.folder '\' x.name '\'],'s'), aux5,'UniformOutput',false);
@@ -245,17 +176,6 @@ fprintf(fid, num2str(kdisc));
 fclose(fid);
 
 
-
-
-function KeyPressFcn (object, eventdata)
-
-global Stop
-keyPressed = eventdata.Key;
-if strcmp(keyPressed,'escape')
-    aux=get(gca,'children');
-    delete(aux(1))
-    Stop=1;
-end
 
 
 

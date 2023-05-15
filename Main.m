@@ -99,19 +99,13 @@ if DoDWI
         end
     end
     % Local registration 
-    if LocalRegisterDWI
-        if ~strcmp(PCNAME,'PHYTM7M2') 
-%             delete(gcp('nocreate'))
-%             parpool(5);
-        end    
+    if LocalRegisterDWI   
         disp('Local Reg. ADC')
         I=1;
         if exist([WriteFolder PatientName '\DWI\Templates.mat'])~=0
             load([WriteFolder PatientName '\DWI\Templates.mat']);
             for Date=Dates   
                 if exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'])~=0
-%                     VisualizeLocalRegistrationDWIP3([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
-%                         LocalRegTemplate{I},roiFactorDW); % Before all images were registered to template, now only b0s
                     VisualizeLocalRegistrationDWIP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
                         Templates{I},LocalRegTemplate{I},roiFactorDW)
                 end

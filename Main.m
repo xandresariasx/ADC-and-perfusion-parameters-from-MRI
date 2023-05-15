@@ -85,9 +85,8 @@ if DoDWI
                 if ~isempty(TemplateDate{I})
                     f=0;
                     while f==0
-                        try                                      
-                            %MakeAnnotationsTemplateP3([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],I,LocalRegTemplate{I});
-                            MakeAnnotationsTemplateV2P3([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],I,LocalRegTemplate{I});
+                        try              
+                            MakeAnnotationsTemplate([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],I,LocalRegTemplate{I});
                             f=1;
                         catch
                             disp('Error try again')

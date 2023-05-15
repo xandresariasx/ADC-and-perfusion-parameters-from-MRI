@@ -99,7 +99,7 @@ if strcmpi(Res,'R')
             if exist('Vol2','var')
                 figure(Fig2)
             end
-            disp('Select Image');
+            disp('Select Image (press esc if finished)');
             Stop2=0;
             while Stop2==0
                 pause(1)
@@ -266,7 +266,7 @@ if strcmpi(Res,'E')
             if exist('Vol2','var')
                 figure(Fig2)
             end
-            disp('Select Image');
+            disp('Select Image (press esc if finished)');
             Stop2=0;
             while Stop2==0
                 pause(1)

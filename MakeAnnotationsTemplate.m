@@ -1,4 +1,4 @@
-function MakeAnnotationsTemplateV2P3(Folder, I, Template)
+function MakeAnnotationsTemplate(Folder, I, Template)
 
 clc
 close all force

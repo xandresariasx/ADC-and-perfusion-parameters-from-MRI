@@ -1,5 +1,7 @@
 # ADC-and-perfusion-parameters-from-MRI
-Download all files and edit RunOnePatient.m with the raw data folder, the folder to write the data, and the patient to process. 
+These scripts are intended to reproduce the results of the paper: Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors".
+
+First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
 Change other options if desired.
 
 If part of this code is used in your work, please cite:

@@ -1,5 +1,7 @@
 function WriteDicomFolderV2(Vol, Info, filename, Description,m,Offset)
 
+% Writes dicom data from 3D volume
+
 mkdir(filename)
 
 if nargin<5
@@ -11,8 +13,6 @@ if isempty(Description)
     Description=aux{end};
 end
 Vol=double(Vol);
-% Vol(isnan(Vol))=min(Vol(:));   % 10/26/2020
-% Vol(isinf(Vol))=min(Vol(:));
 Vol(isnan(Vol))=min(Vol(~isinf(Vol(:))));
 Vol(isinf(Vol))=min(Vol(~isinf(Vol(:))));
 if isempty(Offset)

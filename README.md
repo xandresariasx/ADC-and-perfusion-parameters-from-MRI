@@ -5,8 +5,10 @@ These scripts are intended to reproduce the results of the paper: Arias et al. "
 This tool was developed and tested in Matlab R2017b on Windows OS. It is not guaranteed this tool is going to work on different settings.
 
 # Installation: 
-First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
+Code: First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
 Change other options if desired.
+
+Data: The anonymized MRI images used in this study is expected to be shared soon in Imaging Data Commons (https://datacommons.cancer.gov/repository/imaging-data-commons).
 
 # Results: 
 For DW-MRI data:

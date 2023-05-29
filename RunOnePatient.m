@@ -2,14 +2,14 @@
 clear all
 Folder='RawImages\';            % Folder with raw images
 WriteFolder='Images\';          % Folder to write processed data
-Patient='101-002-106';                                                 % Select patient ID (see paper for available IDs)                                                            
+Patient='101-002-106';                                                 % Select patient ID (see paper for available IDs).                                                           
     
-Options.DoDWI=1;                                                        % Select this option to process DW-MRI images
+Options.DoDWI=1;                                                        % Select this option to process DW-MRI images.
 Options.CurateDWI=1;                                               
-Options.AnnotateDWI=1;
-Options.GlobalRegisterDWI=1;
+Options.AnnotateDWI=1;                                                  % Follow the instructions in the screen and at least segment one tumor, 
+Options.GlobalRegisterDWI=1;                                            % name labels as: Tumor1, Tumor2,...
 Options.LocalRegisterDWI=1;
-    Options.roiFactorDW=0;
+    Options.roiFactorDW=0;                                              % Factor to resize tumor roi (0: no local registration)
 Options.GetParDWI=1;
 Options.GlobalDateRegisterDWI=1;
 Options.LocalDateRegisterDWI=1;

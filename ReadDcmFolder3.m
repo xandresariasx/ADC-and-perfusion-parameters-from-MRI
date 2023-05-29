@@ -1,5 +1,7 @@
 function [Vols,Files]=ReadDcmFolder3(Folder)
 
+% Read dicom data from folder
+
 Dir=dir(Folder); 
 
 Dir=AdjustDirVariable(Dir);
@@ -56,63 +58,3 @@ for I=1:length(Im)
 end
 
 Files=aux3;
-
-% It seems to work like this without checking the instance number
-
-
-%imshow3D(Vols{I})
-
-
-
-
-
-% 
-% 
-% for I=1:length(aux)
-%     Aux=dicomread([Folder aux{I}]);
-%     aux2=dicominfo([Folder aux{I}]);
-%     try
-%         if aux2.InstanceNumber==0 && length(aux)==1
-%             Im=squeeze(Aux); 
-%             return;
-%         else 
-%             if aux2.InstanceNumber==0
-%                 Im=[];
-%                 return;
-%             end
-%         end
-%         if aux2.InstanceNumber~=I
-%             nop=1;
-%             Im=[];
-%             return;
-%         end
-%     catch
-%         Im=[];
-%         return;
-%     end
-%     
-%     Im{I}=squeeze(Aux);   
-%                                     
-%     %Im(:,:,I)= Aux;         
-% end
-% 
-% aux=[];
-% for I=1:length(Im)
-%     aux=[aux ;size(Im{I})];    
-% end
-% 
-% if length(unique(aux(:,1)))==1 && length(unique(aux(:,2)))==1 && size(aux,2)==2
-%     for I=1:length(Im)
-%         Im2(:,:,I)=Im{I};
-%     end
-%     Im=Im2;
-% end
-
-
-
-
-
-
-
-
-

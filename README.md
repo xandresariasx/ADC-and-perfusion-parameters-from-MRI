@@ -13,7 +13,7 @@ Data: The anonymized MRI images used in this study is expected to be shared soon
 # Results: 
 For DW-MRI data:
 
--Curated data is going to be located at: {WriteFolder} \ {Patient} \DWI\{Date}\
+-Curated data is going to be located at: {WriteFolder} \ {Patient} \DWI\ {Date}\
 
 -Registered images at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\
 

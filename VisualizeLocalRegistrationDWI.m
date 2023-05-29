@@ -1,5 +1,5 @@
-function VisualizeLocalRegistrationDWIP3V2(Folder,LocalRegTemplates,LocalRegTemplate,roiFactor)
-
+function VisualizeLocalRegistrationDWI(Folder,LocalRegTemplates,LocalRegTemplate,roiFactor)
+% Function to perform local registration around tumor in DW-MRI data
 
 try, rmdir([Folder '\Processed\'], 's'); end
 try, rmdir([Folder '\Tmp\'], 's'); end

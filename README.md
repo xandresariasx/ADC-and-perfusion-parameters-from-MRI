@@ -16,6 +16,7 @@ For DW-MRI data:
 -Curated data is going to be located at: {WriteFolder}\{Patient}\DWI\{Date}\
 -Registered images at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\
 -ADC maps at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\Local\ADC.mat
+-Registered ADC across dates at:{WriteFolder}\{Patient}\DWI\DateRegisteredLocal\{Date}\Processed\Registered_VOI#\ADC\
 
 # Copyrights: 
 If part of this code is used in your work, please cite:

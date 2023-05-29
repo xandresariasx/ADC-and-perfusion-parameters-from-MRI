@@ -121,7 +121,7 @@ if DoDWI
         disp('Computing ADC maps')
         I=1;
         for Date=Dates
-            ADCMAPP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\'])            
+            ADCMAP([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\'])            
             I=I+1;
         end
     end

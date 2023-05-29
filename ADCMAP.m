@@ -52,20 +52,11 @@ end
 ADC(cellfun(@isempty,ADC))=[];
 ADCav=cat(4,ADC{:});
 ADCav=mean(ADCav,4);
-save([Folder '\ADC.mat\'],'ADC','ADCav')
-
-
-
-
- 
-
-
-
+save([Folder '\ADC.mat'],'ADC','ADCav')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 function str_out=getb(str_in)
-
-
 try
     aux=strsplit(str_in,'=');
     aux=strsplit(aux{2},'_');
@@ -73,12 +64,3 @@ try
 catch
     str_out=[];
 end
-
-
-
-
-
-
-
-
-

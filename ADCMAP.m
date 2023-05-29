@@ -1,4 +1,5 @@
-function ADCMAPP3V2(Folder)
+function ADCMAPP(Folder)
+% Function that generates ADC map from registered DW-MRI images
 
 disp('Processing ADC all directions')
 Files=AdjustDirVariable(dir([Folder '*']));

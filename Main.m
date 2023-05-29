@@ -106,7 +106,7 @@ if DoDWI
             load([WriteFolder PatientName '\DWI\Templates.mat']);
             for Date=Dates   
                 if exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'])~=0
-                    VisualizeLocalRegistrationDWIP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
+                    VisualizeLocalRegistrationDWI([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
                         Templates{I},LocalRegTemplate{I},roiFactorDW)
                 end
                 I=I+1;

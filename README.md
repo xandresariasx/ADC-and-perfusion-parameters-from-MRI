@@ -8,12 +8,14 @@ This tool was developed and tested in Matlab R2017b on Windows OS. It is not gua
 First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
 Change other options if desired.
 
+# Results: 
 For DW-MRI data:
 
 -Curated data is going to be located at: {WriteFolder}\{Patient}\DWI\{Date}\
 -Registered images at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\
 -ADC maps at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\Local\ADC.mat
 
+# Copyrights: 
 If part of this code is used in your work, please cite:
 
 Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors"

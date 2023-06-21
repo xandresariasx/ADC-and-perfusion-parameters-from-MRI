@@ -8,7 +8,7 @@ This tool was developed and tested in Matlab R2017b on Windows OS. It is not gua
 Code: First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
 Change other options if desired.
 
-Data: The anonymized MRI images used in this study is expected to be shared soon in Imaging Data Commons (https://datacommons.cancer.gov/repository/imaging-data-commons).
+Data: The anonymized MRI images used in this study are expected to be shared soon in Imaging Data Commons (https://datacommons.cancer.gov/repository/imaging-data-commons).
 
 # Results: 
 For DW-MRI data:
@@ -19,7 +19,7 @@ For DW-MRI data:
 
 -ADC maps at: {WriteFolder}\ {Patient}\DWI\Registered\ {Date}\Local\ADC.mat
 
--Registered ADC across dates at:{WriteFolder}\ {Patient}\DWI\DateRegisteredLocal\ {Date}\Processed\Registered_VOI#\ADC\
+-Registered ADC across dates at: {WriteFolder}\ {Patient}\DWI\DateRegisteredLocal\ {Date}\Processed\Registered_VOI#\ADC\
 
 # Copyrights: 
 If part of this code is used in your work, please cite:

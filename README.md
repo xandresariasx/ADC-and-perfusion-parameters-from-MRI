@@ -8,7 +8,7 @@ This tool was developed and tested in Matlab R2017b on Windows OS. It is not gua
 Code: First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
 Change other options if desired.
 
-Data: The anonymized MRI images used in this study are expected to be shared soon in Imaging Data Commons (https://datacommons.cancer.gov/repository/imaging-data-commons). Temporary one patient data with ADC images can be downloaded here: https://drive.google.com/file/d/1N7FeGAPMVt-74yc4petkc5WII1sV-1up/view?usp=drive_link
+Data: The anonymized MRI images used in this study are expected to be shared soon in Imaging Data Commons (https://datacommons.cancer.gov/repository/imaging-data-commons). Temporary, one patient data with ADC images can be downloaded here: https://drive.google.com/file/d/1N7FeGAPMVt-74yc4petkc5WII1sV-1up/view?usp=drive_link, another patient data with T1 and DCE images here: https://drive.google.com/file/d/1UfuuWHuaUZlcfY0uRNUHsdQgUXO8EDdV/view?usp=sharing. Extract the files in the raw data folder.
 
 # Results: 
 For DW-MRI data:

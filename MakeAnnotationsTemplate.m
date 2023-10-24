@@ -62,8 +62,14 @@ else
 end
 
 Res=[];
-while ~strcmpi(Res,'S') && ~strcmpi(Res,'R') && ~strcmpi(Res,'E')
-    Res=input('Skip (S), Redo (R) or Edit (E) segmentations ','s');
+if exist([Folder 'Masks.mat'],'file')==0
+    while ~strcmpi(Res,'S') && ~strcmpi(Res,'R')
+        Res=input('Skip (S), Redo (R) segmentations ','s');
+    end
+else
+    while ~strcmpi(Res,'S') && ~strcmpi(Res,'R') && ~strcmpi(Res,'E')
+        Res=input('Skip (S), Redo (R) or Edit (E) segmentations ','s');
+    end
 end
 
 if strcmpi(Res,'S')

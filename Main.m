@@ -4,7 +4,7 @@ function Main(PatientName, Folder, WriteFolder, Options)
 [DoDWI,CurateDWI,AnnotateDWI,...
     GlobalRegisterDWI,LocalRegisterDWI,roiFactorDW,GetParDWI,GlobalDateRegisterDWI,...
     LocalDateRegisterDWI,roiFactorLDW,UseSegmentationForLocalRegDWI,DoT1W,...
-    CurateT1W,BiasCorrectT1,AnnotateT1W,GlobalRegisterT1W,SpetialRegT1,LocalRegisterT1W,...
+    CurateT1W,AnnotateT1W,GlobalRegisterT1W,SpetialRegT1,LocalRegisterT1W,...
     roiFactorT1,IncludeArteryLR,GetT1,CorrectFA,WeightT1,AirTh,ScaleT1Ims,RefTiss,gammaT1,gammaM0,...
     solver,CorrectBiasBetweenSlices,AssumeT1s,GetConc,ContrastBrand,ScaleMo,AssumeT1sC,AssumeT1Artery,GetPar,...
     GlobalDateRegisterT1,LocalDateRegisterT1,roiFactorLT1,UseSegmentationForLocalRegT1,...
@@ -106,7 +106,7 @@ if DoDWI
             load([WriteFolder PatientName '\DWI\Templates.mat']);
             for Date=Dates   
                 if exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'])~=0
-                    VisualizeLocalRegistrationDWI([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
+                    VisualizeLocalRegistrationDWIP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
                         Templates{I},LocalRegTemplate{I},roiFactorDW)
                 end
                 I=I+1;
@@ -121,7 +121,7 @@ if DoDWI
         disp('Computing ADC maps')
         I=1;
         for Date=Dates
-            ADCMAP([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\'])            
+            ADCMAPP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\'])            
             I=I+1;
         end
     end
@@ -190,40 +190,25 @@ if DoT1W
         try, rmdir([WriteFolder PatientName '\T1W\'],'s');  end
         I=1;
         for Date=Dates
-            CurateT1WP3V2(WriteFolder,Infos{I},SeriesDescription{I},PatientName,Date{1},Folder_T1,BiasCorrectT1); 
-            CurateDCEP3V2(Infos{I},SeriesDescription{I},PatientName,Date{1},Folder_DCE,WriteFolder,BiasCorrectT1);
+            CurateT1WFun(WriteFolder,Infos{I},SeriesDescription{I},PatientName,Date{1},Folder_T1); 
+            CurateDCEfun(Infos{I},SeriesDescription{I},PatientName,Date{1},Folder_DCE,WriteFolder);
             I=I+1;
         end
-    end
-    % Copy masks from network
-    if UseNetworkMasks
-        disp('Copying T1 masks from network')
-        for Date=Dates            
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0 &&...
-                    exist(['M:\dept\IRAT_Research\Andres Arias\PEGPH20 2020 Results\Results\' PatientName '\T1W\' Date{1} '\Masks.mat'])
-                copyfile(['M:\dept\IRAT_Research\Andres Arias\PEGPH20 2020 Results\Results\' PatientName '\T1W\' Date{1} '\Masks.mat'],...
-                    [WriteFolder PatientName '\T1W\' Date{1} '\Masks.mat'])
-%                 if InvertMasks
-%                     InvertMarsk([WriteFolder PatientName '\T1W\' Date{1} '\Masks.mat'])
-%                 end
-            end
-        end
-    end 
+    end  
     % Annotate T1
     if AnnotateT1W 
         disp('Annotate T1 masks')
         Ind=cellfun(@(x) exist([WriteFolder PatientName '\T1W\' x '\'])~=0, Dates);
         I=1;
         for Date=Dates(Ind)  
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0  %DCEav\'])~=0  %9/14/2020
+            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0 
                 f=0;
                 while f==0
                     try
-%                         MakeAnnotationsTemplateP3([WriteFolder PatientName '\T1W\' Date{1} '\'],I);
-                        MakeAnnotationsTemplateV2P3([WriteFolder PatientName '\T1W\' Date{1} '\'],I);
+                        MakeAnnotationsTemplate([WriteFolder PatientName '\T1W\' Date{1} '\'],I);
                         f=1;
                     catch 
-                        disp(' ');disp('Error try again')
+                        disp(' ');disp('Error, try again.')
                         pause
                     end
                 end
@@ -239,7 +224,7 @@ if DoT1W
             if ~exist([WriteFolder PatientName '\T1W\ImageTemplates.mat'])
                 for Date=Dates
                     if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
-                        ImageTemplate{I}=GetT1RegistrationTemplateP3([WriteFolder PatientName '\T1W\' Date{1} '\']);  
+                        ImageTemplate{I}=GetT1RegistrationTemplate([WriteFolder PatientName '\T1W\' Date{1} '\']);  
                     end
                     I=I+1;
                 end
@@ -247,11 +232,7 @@ if DoT1W
                 save([WriteFolder PatientName '\T1W\ImageTemplates.mat'], 'ImageTemplate');
             else
                 load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
-            end
-            if ~strcmp(PCNAME,'PHYTM7M2') 
-%                 delete(gcp('nocreate'))
-%                 parpool(4); %6
-            end
+            end            
             try, rmdir([WriteFolder PatientName '\T1W\Registered\'],'s');  end
             try, rmdir([WriteFolder PatientName '\T1W\DateRegistered\'],'s');  end
             try, rmdir([WriteFolder PatientName '\T1W\DateRegisteredLocal\'],'s');  end            

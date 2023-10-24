@@ -4661,7 +4661,7 @@ classdef MCC_c4D < handle
             tforms=[];
             aux1=cell(Nv,1);
             aux2=cell(Nv,1);
-            for i=1:Nv % FMX (Skip contour), NGR 2016 09 05   If multicore parfor             
+            parfor i=1:Nv % FMX (Skip contour), NGR 2016 09 05   If multicore parfor             
                  %J(i)=batch(@register_eachVolFun,2,{obj,vsI,vs,i,tType,Rf,Vf0,Nbins,iVolRef,MI,tF,Vf,Nbits,x,MIref});
                     [aux1{i},aux2{i}]=register_eachVolFun(obj,vsI,vs,i,tType,Rf,Vf0,Nbins,iVolRef,MI,tF,Vf,Nbits,x,MIref);
 %                     vsO(i)=aux1;

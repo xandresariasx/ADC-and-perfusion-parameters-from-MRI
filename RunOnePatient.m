@@ -17,7 +17,6 @@ Options.LocalDateRegisterDWI=1;
     Options.UseSegmentationForLocalRegDWI=1;
 Options.DoT1W=1;
 Options.CurateT1W=1;
-    Options.BiasCorrectT1=0;
 Options.AnnotateT1W=1;
 Options.GlobalRegisterT1W=1;
 Options.SpetialRegT1=0;

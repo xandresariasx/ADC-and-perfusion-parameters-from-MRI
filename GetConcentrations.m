@@ -90,14 +90,19 @@ Sigma=12;    % before 7   ,  9/10/2020
 [~,k]=max(GderN);
 
 %%%%%
-fig=figure; yyaxis left, plot(TimesSec,IsMed)
-hold on, yyaxis left, plot(TimesSec(k),IsMed(k),'o')
-hold on, yyaxis right, plot(TimesSec,GderN,'r')
+% fig=figure; yyaxis left, plot(TimesSec,IsMed)
+% hold on, yyaxis left, plot(TimesSec(k),IsMed(k),'o')
+% hold on, yyaxis right, plot(TimesSec,GderN,'r')
+fig=figure; plot(TimesSec,IsMed)
+hold on, plot(TimesSec(1:k-1),IsMed(1:k-1),'r*')
+hold on, plot(TimesSec(k+1:end),IsMed(k+1:end),'r*')
+hold on, plot(TimesSec(k),IsMed(k),'ro','LineWidth',2,'MarkerSize', 12)
+ylabel('Intensity'), xlabel('Time (s)'), title('Median Intensity Artery')
 %%%%
 
 t = timer('ExecutionMode', 'singleShot', 'StartDelay', 600, 'TimerFcn', @pressEnter);
 start(t);
-res = input('Enter shift of injection point (o):');
+res = input('Enter steps to shift injection point (o):');
 if isempty(res)
     res=0;
 end
@@ -106,9 +111,12 @@ delete(t);
 k=k+res;
 %%%%%
 close(fig)
-fig=figure; yyaxis left, plot(TimesSec,IsMed)
-hold on, yyaxis left, plot(TimesSec(k),IsMed(k),'o')
-hold on, yyaxis right, plot(TimesSec,GderN,'r')
+% fig=figure; yyaxis left, plot(TimesSec,IsMed)
+% hold on, yyaxis left, plot(TimesSec(k),IsMed(k),'o')
+% hold on, yyaxis right, plot(TimesSec,GderN,'r')
+fig=figure; plot(TimesSec,IsMed)
+hold on, plot(TimesSec(k),IsMed(k),'ro','LineWidth',2,'MarkerSize', 12)
+ylabel('Intensity'), xlabel('Time (s)'), title('Median Intensity Artery')
 %%%%
 
 TrigTimes=TrigTimes(k:end);

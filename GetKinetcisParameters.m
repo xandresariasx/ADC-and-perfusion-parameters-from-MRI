@@ -30,7 +30,7 @@ AIF(2,:)=AIF(2,:)/(1-0.45);     %Hematrocrit correction, is it neccessary?
 save([Folder filesep 'AIF.mat'], 'AIF')
 
 % Shift AIF
-figure, plot(AIF(1,:),AIF(2,:))
+% figure, plot(AIF(1,:),AIF(2,:))
 load([FolderMask filesep 'Masks.mat']);
 L=find(contains(Labels,'Tumor','IgnoreCase',true),1);
 [x,y,z]=ind2sub(size(MaksPerLabel{L}),find(MaksPerLabel{L}(:)));
@@ -40,9 +40,14 @@ for II=1:length(x)
             ConsT=[ConsT; squeeze([Cons(x(II),y(II),z(II),:)])']; 
     end
 end
-hold on, plot(Times,nanmedian(ConsT))
-[~,Center] = kmedoids(ConsT,1);
-hold on, plot(Times,Center)
+% hold on, plot(Times,nanmedian(ConsT))
+% [~,Center] = kmedoids(ConsT,1);
+% hold on, plot(Times,Center)
+figure, plot(AIF(1,:),AIF(2,:))
+hold on, plot(Times,nanmedian(ConsT),'r*-')
+xlim([0 max(Times)])
+ylabel('Contrast'), xlabel('Time (s)')
+legend('AIF','Tumor Contrast')
 
 Shift=input('Enter # of steps to shift AIF: ');  
 if Shift>0

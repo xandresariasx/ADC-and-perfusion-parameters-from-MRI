@@ -1,8 +1,8 @@
 # ADC-and-perfusion-parameters-from-MRI
-These scripts are intended to reproduce the results of the paper: Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors".
+These scripts are intended to reproduce the results of the paper: Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors". It generates ADC maps from DW-MRI data; T1 maps from T1-MRI; and Ktrans; Vp, Ve, iAUC maps from DCE-MRI.
 
 # Requirements: 
-This tool was developed and tested in Matlab R2017b on Windows OS. It is not guaranteed this tool is going to work on different settings.
+Matlab R2017b or above.
 
 # Installation: 
 Code: First download all files and add it to the Matlab path. Second, edit RunOnePatient.m. Change the raw data folder, the folder to write the data, and the patient to process. 
@@ -13,13 +13,27 @@ Data: The anonymized MRI images used in this study are expected to be shared soo
 # Results: 
 For DW-MRI data:
 
--Curated data is going to be located at: {WriteFolder}\ {Patient}\DWI\ {Date}\
+-Curated data is going to be located at: {WriteFolder}\{Patient}\DWI\{Date}\
 
--Registered images at: {WriteFolder}\ {Patient}\DWI\Registered\ {Date}\
+-Registered images at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\
 
--ADC maps at: {WriteFolder}\ {Patient}\DWI\Registered\ {Date}\Local\ADC.mat
+-ADC maps at: {WriteFolder}\{Patient}\DWI\Registered\{Date}\Local\ADC.mat
 
--Registered ADC across dates at: {WriteFolder}\ {Patient}\DWI\DateRegisteredLocal\ {Date}\Processed\Registered_VOI#\ADC\
+-Registered ADC across dates at: {WriteFolder}\{Patient}\DWI\DateRegisteredLocal\{Date}\Processed\Registered_VOI#\ADC\
+
+For T1-MRI and DCE-MRI data:
+
+-Curated data is going to be located at: {WriteFolder}\{Patient}\T1W\{Date}\
+
+-Registered images at: {WriteFolder}\{Patient}\T1W\Registered\{Date}\Local\
+
+- T1 maps at: {WriteFolder}\{Patient}\T1W\Registered\{Date}\Local\T1Data_NoCorrection.mat
+
+- iAUC maps at: {WriteFolder}\{Patient}\T1W\Registered\{Date}\Local\90sAUC.mat
+
+- Ktrans, Vp, Ve maps at: {WriteFolder}\{Patient}\T1W\Registered\{Date}\Local\Perfussion_Parameters_Maps.mat
+
+
 
 # Copyrights: 
 If part of this code is used in your work, please cite:

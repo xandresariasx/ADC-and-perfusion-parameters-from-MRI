@@ -332,18 +332,17 @@ if DoT1W
     % Global Date registration
     if GlobalDateRegisterT1
         disp('Global date registration')
-        try,rmdir([WriteFolder PatientName '\T1W\DateRegistered\'],'s');end
-        load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
-        Ind=cellfun(@(x) exist([WriteFolder PatientName '\T1W\' x '\'])~=0, Dates);       
+        try,rmdir([WriteFolder PatientName filesep 'T1W' filesep 'DateRegistered' filesep],'s');end
+        load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
+        Ind=cellfun(@(x) exist([WriteFolder PatientName filesep 'T1W' filesep x filesep])~=0, Dates);       
         I=1;
         for Date=Dates
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
-                %MoveFilesForDateRegistrationT1([WriteFolder PatientName],Date{1},ImageTemplate{I})   
-                MoveFilesForDateRegistrationT1V2([WriteFolder PatientName],Date{1},ImageTemplate{I},Dates(Ind),ImageTemplate) 
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
+                MoveFilesForDateRegistrationT1([WriteFolder PatientName],Date{1},ImageTemplate{I},Dates(Ind),ImageTemplate) 
                 I=I+1;
             end
         end
-        obj = MCC_cPatient([WriteFolder PatientName '\T1W\DateRegistered\']);
+        obj = MCC_cPatient([WriteFolder PatientName filesep 'T1W' filesep 'DateRegistered' filesep]);
         obj.Register_Date(ImageTemplate,obj.content{1},...
             {'none','rigid','similarity','affine'});
         MetaCorrectionT1([WriteFolder PatientName],obj.content)
@@ -351,11 +350,11 @@ if DoT1W
     % Local Date registration
     if LocalDateRegisterT1 
         disp('Local date registration')
-        try,rmdir([WriteFolder PatientName '\T1W\DateRegisteredLocal\'],'s');end
-        load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
+        try,rmdir([WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep],'s');end
+        load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
         I=1;
         for Date=Dates
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
                 MoveFilesForLocalDateRegistrationT1([WriteFolder PatientName],Date{1},ImageTemplate{I})
                 if I==1
                     DateI=Date{1};
@@ -364,9 +363,9 @@ if DoT1W
             end
         end
         VOI=GenerateVOIforLocalDateRegistration([WriteFolder PatientName],...
-            [WriteFolder PatientName '\T1W\' DateI '\'],...
-            [WriteFolder PatientName '\T1W\DateRegisteredLocal\' DateI], ImageTemplate{1},roiFactorLT1);
-        obj = MCC_cPatient([WriteFolder PatientName '\T1W\DateRegisteredLocal\']);
+            [WriteFolder PatientName filesep 'T1W' filesep DateI filesep],...
+            [WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep DateI], ImageTemplate{1},roiFactorLT1);
+        obj = MCC_cPatient([WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep]);
         if UseSegmentationForLocalRegT1
             obj.Register_Date_Local(cellstr(repmat('TumorSegmentationT1',[numel(ImageTemplate),1]))',DateI,...
                 {'none','rigid','similarity','affine'},VOI);
@@ -374,7 +373,7 @@ if DoT1W
             obj.Register_Date_Local(ImageTemplate,DateI,...
                 {'none','rigid','similarity','affine'},VOI);
         end
-        fid=fopen([WriteFolder PatientName '\T1W\DateRegisteredLocal\RegistrationParameters.txt'],'w');
+        fid=fopen([WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep 'RegistrationParameters.txt'],'w');
         fprintf(fid, ['ROI Factor: ' num2str(roiFactorLT1) char(10) 'Use Seg.: ' num2str(UseSegmentationForLocalRegT1)]);
         fclose(fid);
     end

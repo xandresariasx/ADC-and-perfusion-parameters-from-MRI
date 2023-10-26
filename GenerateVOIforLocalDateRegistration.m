@@ -1,13 +1,13 @@
 function VOI=GenerateVOIforLocalDateRegistration(Folder,MaskFolder, ImageFolder, ImageTemplate, roiFactor,Infos)
 
-load([MaskFolder '\Masks.mat'])
+load([MaskFolder filesep 'Masks.mat'])
 FieldsTumor=find(  (contains(Labels, 'tumor', 'IgnoreCase',true)  |   cellfun(@(x) ~isempty(regexpi(x,'(t)+[0-9]')), Labels)) ...
                     & ~contains(Labels, 'core', 'IgnoreCase',true) & ~contains(Labels, 'viable', 'IgnoreCase',true));  
 RGBs={[1 0 0],[0 1 0],[0 1 1],[1 1 0]};
 cont=1;
 VOI=[];
 if ~isempty(ImageFolder)
-[~,Infos]=ReadDcmFolder4([ImageFolder '\Processed\Registered\' ImageTemplate '\']);
+[~,Infos]=ReadDcmFolder4([ImageFolder filesep 'Processed' filesep 'Registered' filesep ImageTemplate filesep]);
 Infos=Infos{1}{1};
 end
 Resolution=[Infos.PixelSpacing' Infos.SliceThickness];

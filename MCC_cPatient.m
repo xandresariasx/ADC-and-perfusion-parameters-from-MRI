@@ -2,7 +2,7 @@
 %
 %   Radiomics project: "Multi-parametric MRI (mpMRI) Analysis"
 %   Nicolas Georges Rognin, PhD
-%   2016-2018 © Moffitt Cancer Center
+%   2016-2018 ? Moffitt Cancer Center
 
 classdef MCC_cPatient < handle
     
@@ -40,9 +40,13 @@ classdef MCC_cPatient < handle
                     % Path
                     obj.root = root;
                     % Location
-                    cellTxt = strsplit(root,'\');
+                    cellTxt = strsplit(root,filesep);
                     obj.name = cellTxt{end};
-                    obj.InstituteID =  cellTxt{end-3};
+                    if numel(cellTxt)>3
+                        obj.InstituteID =  cellTxt{end-3};
+                    else
+                        obj.InstituteID ='-';
+                    end
                     obj.DatabaseID =  cellTxt{end-2};
                     obj.CohortID = cellTxt{end-1};
                     obj.PatientID = cellTxt{end};
@@ -191,7 +195,7 @@ classdef MCC_cPatient < handle
                     obj.StudyDate(iD).vsRegistered(iVolRef(iD)).root;
             end
             % Registration
-            scrFolder=[obj.root '\' obj.StudyDate(iDref).StudyDateID];
+            scrFolder=[obj.root filesep obj.StudyDate(iDref).StudyDateID];
             x = MCC_c4D(scrFolder, subFolderList);
             for iD=1:Nd                
                 if iD == 1
@@ -276,7 +280,7 @@ classdef MCC_cPatient < handle
                     y.Compare;
                 catch ME
                     disp(ME);
-                    MCC_writeLog([CD '\log.txt'], ...
+                    MCC_writeLog([CD filesep 'log.txt'], ...
                         ME, '');
                     cd(CD);
                 end
@@ -294,7 +298,7 @@ classdef MCC_cPatient < handle
                     obj.StudyDate(iD).Compare;
                 catch ME
                     disp(ME);
-                    MCC_writeLog([CD '\log.txt'], ...
+                    MCC_writeLog([CD filesep 'log.txt'], ...
                         ME, '');
                     cd(CD);
                 end
@@ -348,7 +352,7 @@ classdef MCC_cPatient < handle
                     obj.StudyDate(iD).vsRegistered(iVolRef(iD)).root;
             end
             % Registration
-            scrFolder=[obj.root '\' obj.StudyDate(iDref).StudyDateID];
+            scrFolder=[obj.root filesep obj.StudyDate(iDref).StudyDateID];
             x = MCC_c4D(scrFolder, subFolderList);
             for iD=1:Nd                
                 if iD == 1
@@ -442,7 +446,7 @@ classdef MCC_cPatient < handle
                         y.Compare;
                     catch ME
                         disp(ME);
-                        MCC_writeLog([CD '\log.txt'], ...
+                        MCC_writeLog([CD filesep 'log.txt'], ...
                             ME, '');
                         cd(CD);
                     end
@@ -461,7 +465,7 @@ classdef MCC_cPatient < handle
                     obj.StudyDate(iD).Compare;
                 catch ME
                     disp(ME);
-                    MCC_writeLog([CD '\log.txt'], ...
+                    MCC_writeLog([CD filesep 'log.txt'], ...
                         ME, '');
                     cd(CD);
                 end
@@ -508,7 +512,7 @@ classdef MCC_cPatient < handle
                     obj.StudyDate(iD).vsRegistered(iVolRef(iD)).root;
             end
             % Loca Registration VOI
-            scrFolder=[obj.root '\' obj.StudyDate(iDref).StudyDateID];
+            scrFolder=[obj.root filesep obj.StudyDate(iDref).StudyDateID];
             x = MCC_c4D(scrFolder, subFolderList);
             for iD=1:Nd                
                 if iD == 1
@@ -616,7 +620,7 @@ classdef MCC_cPatient < handle
                 R=obj.StudyDate(1).vsRegistered_VOI1(1).GetCropVec(VOIx);
                 Reg_ROI=zeros(size(obj.StudyDate(1).vsRegistered_VOI1(1).data));
                 Reg_ROI(R{1},R{2},R{3}) = 1;
-                save([obj.root '\roi' num2str(iROI) '.mat'],'Reg_ROI')                 
+                save([obj.root filesep 'roi' num2str(iROI) '.mat'],'Reg_ROI')                 
             end
         end
         
@@ -653,7 +657,7 @@ classdef MCC_cPatient < handle
             Nd = obj.GetNbObjects;
             iDref = 1; % Base line (first visit by default)
             for iD=1:Nd
-                txt = strsplit(obj.StudyDate(iD).root,'\');
+                txt = strsplit(obj.StudyDate(iD).root,filesep);
                 if strcmp(lower(txt{end}),lower(options))
                     iDref = iD;
                 end
@@ -695,7 +699,7 @@ classdef MCC_cPatient < handle
                 catch ME
                     disp(ME);
                     CD = cd;
-                    MCC_writeLog([CD '\log.txt'], ...
+                    MCC_writeLog([CD filesep 'log.txt'], ...
                         ME, ' ');
                     cd(CD);
                 end
@@ -780,7 +784,7 @@ classdef MCC_cPatient < handle
             % Load a study date
             % NGR 2016 03 04
             
-            scrFolder = [obj.root '\' StudyDateID];
+            scrFolder = [obj.root filesep StudyDateID];
             if isempty(obj.StudyDate)
                 obj.StudyDate = ...
                     MCC_c4D(scrFolder);

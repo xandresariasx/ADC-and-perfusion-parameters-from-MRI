@@ -92,47 +92,10 @@ if Times(10)-Times(9)>1000
     Times=Times/1000;
 end
 %%%
-if exist([WriteFolder PatientName '\T1W\' Date '\'])==0
-    mkdir([WriteFolder PatientName '\T1W\' Date '\']);
+if exist([WriteFolder PatientName filesep 'T1W' filesep Date filesep])==0
+    mkdir([WriteFolder PatientName filesep 'T1W' filesep Date filesep]);
 end
-% 
-% try
-%     Titles=[];
-%     for I=1:length(Vols)
-%         Volhalf(:,:,I)=Vols{I}(:,:,floor(size(Vols{I},3)/2)); 
-%         FA=num2str(InfosPerTimeSorted{I}{1}.FlipAngle);
-%         RT=num2str(InfosPerTimeSorted{I}{1}.RepetitionTime);
-%         IDs{I}=InfosPerTimeSorted{I}{1}.SeriesInstanceUID;
-%         [x,y,z]=size(Vols{I});
-%         Titles{I}=['FA=' FA ' TR=' RT ' Dims=' num2str([x,y,z]) ' (t= ' num2str(round(Times(I))) ' s)'];
-%         means(I)=mean(reshape(Volhalf(:,:,I),[1,numel(Volhalf(:,:,I))]));
-%     end
-%     figure, imshow3DV2(Volhalf,[],Titles)
-%     savefig([WriteFolder PatientName '\T1W\' Date '\OriginalImgsDCE'])
-%     Titles=[];
-%     for I=1:length(Vols)        
-%         Titles{I}=['t= ' num2str(round(Times(I))) ' s'];
-%     end
-%     MakeMultipleFiguresVideo(Vols,Titles,[],[WriteFolder PatientName '\T1W\' Date '\OriginalImgsDCE'],[1 1],[5 8])
-% catch
-%     Titles=[];
-%     Volhalf=[];
-%     for I=1:length(Vols)
-%         Volhalf{I}=Vols{I}(:,:,floor(size(Vols{I},3)/2)); 
-%         FA=num2str(InfosPerTimeSorted{I}{1}.FlipAngle);
-%         RT=num2str(InfosPerTimeSorted{I}{1}.RepetitionTime);
-%         IDs{I}=InfosPerTimeSorted{I}{1}.SeriesInstanceUID;
-%         [x,y,z]=size(Vols{I});
-%         Titles{I}=['FA=' FA ' TR=' RT ' Dims=' num2str([x,y,z]) ' (t= ' num2str(round(Times(I))) ' s)'];
-%         means(I)=mean(reshape(Volhalf{I},[1,numel(Volhalf{I})]));
-%     end
-%     MakeMultipleFigures(Volhalf,Titles,[],[WriteFolder PatientName '\T1W\' Date '\OriginalImgsDCE'])    
-% end
-% [~,~,I_ID]=unique(IDs);
-% I_ID=num2str(I_ID);
-% figure, plot(Times,means,'*-')    
-% hold on, text(Times,means, I_ID, 'horizontal','left', 'vertical','bottom','FontSize', 8)
-% savefig([WriteFolder PatientName '\T1W\' Date '\IvsTime'])
+
 
 aux=combnk([1:numel(Vols)],2);
 RM=[];
@@ -144,21 +107,9 @@ end
 if ~isempty(RM)
     disp(['Automatically discarded volumes: ' num2str(RM)])
 end
-% kdisc=str2num(input('Discard Other Volumes? ','s'));
 kdisc=unique([RM]);
-% for I=1:length(Vols)
-%     FA=num2str(InfosPerTimeSorted{I}{1}.FlipAngle);
-%     RT=num2str(InfosPerTimeSorted{I}{1}.RepetitionTime);
-%     [x,y,z]=size(Vols{I});
-%     Titles{I}=['FA=' FA ' TR=' RT ' Dims=' num2str([x,y,z]) ' (t= ' num2str(round(Times(I))) ' s)'];
-%     if any(kdisc==I)
-%         Titles{I}=[Titles{I} ' REMOVED'];
-%     end   
-% end
-% MakeMultipleFigures(Volhalf,Titles,[],[WriteFolder PatientName '\T1W\' Date '\OriginalImgsDCE'])   
 
-
-fid=fopen([WriteFolder PatientName '\T1W\' Date '\DiscardedDCE.txt'],'w');
+fid=fopen([WriteFolder PatientName filesep 'T1W' filesep Date filesep 'DiscardedDCE.txt'],'w');
 fprintf(fid, num2str(kdisc));
 fclose(fid);
 
@@ -176,17 +127,16 @@ aux=aux1 & aux2 & aux3;
 Vols2=Vols(aux);
 Vols4D(1,1,1,1:length(Vols2))=Vols2; 
 Volav=sum(cell2mat(Vols4D),4)/length(Vols2);
-% Volmax=max(cell2mat(Vols4D),[],4);
 
  for k=1:length(InfosPerTimeSorted)
-    mkdir([WriteFolder PatientName '\T1W\' Date '\DCE_t=' num2str(k) '\'])
+    mkdir([WriteFolder PatientName filesep 'T1W' filesep Date filesep 'DCE_t=' num2str(k) filesep])
     for I=1:length(InfosPerTimeSorted{k})
-        copyfile(InfosPerTimeSorted{k}{I}.Filename,[WriteFolder PatientName '\T1W\' Date '\DCE_t=' num2str(k) '\' num2str(I) '.dcm'])
+        copyfile(InfosPerTimeSorted{k}{I}.Filename,[WriteFolder PatientName filesep 'T1W' filesep Date filesep 'DCE_t=' num2str(k) filesep num2str(I) '.dcm'])
     end   
  end
 
 
-WriteDicomFolderV3(Volav, InfosPerTimeSorted{find(aux,1)}, [WriteFolder PatientName '\T1W\' Date '\DCEav\'],'DCE Average');
+WriteDicomFolderV3(Volav, InfosPerTimeSorted{find(aux,1)}, [WriteFolder PatientName filesep 'T1W' filesep Date filesep 'DCEav' filesep],'DCE Average');
 
 close all force
 

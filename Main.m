@@ -28,19 +28,19 @@ close all force
 warning off
 
 % Read files
-if exist([WriteFolder PatientName '\FilesInfo.mat'],'file')==0 | (CurateDWI & DoDWI) |...
+if exist([WriteFolder PatientName filesep 'FilesInfo.mat'],'file')==0 | (CurateDWI & DoDWI) |...
         (CurateT1W & DoT1W)
     I=1;
     FilesFolderNames=[]; Infos=[]; SeriesDescription=[];
     disp('Reading files')
     for Date=Dates       
-        [FilesFolderNames{I},Infos{I},SeriesDescription{I}]=ReadPatientFiles([Folder PatientName '\' Date{1} '\**\*']); 
+        [FilesFolderNames{I},Infos{I},SeriesDescription{I}]=ReadPatientFiles([Folder PatientName filesep Date{1} filesep '**' filesep '*']); 
         I=I+1;
     end
     mkdir([WriteFolder PatientName])
-    save([WriteFolder PatientName '\FilesInfo.mat'],'FilesFolderNames','Infos','SeriesDescription'); 
+    save([WriteFolder PatientName filesep 'FilesInfo.mat'],'FilesFolderNames','Infos','SeriesDescription'); 
 else
-    load([WriteFolder PatientName '\FilesInfo.mat']);
+    load([WriteFolder PatientName filesep 'FilesInfo.mat']);
 end
 
 
@@ -187,7 +187,7 @@ end
 if DoT1W  
     % Curate T1
     if CurateT1W
-        try, rmdir([WriteFolder PatientName '\T1W\'],'s');  end
+        try, rmdir([WriteFolder PatientName filesep 'T1W' filesep],'s');  end
         I=1;
         for Date=Dates
             CurateT1WFun(WriteFolder,Infos{I},SeriesDescription{I},PatientName,Date{1},Folder_T1); 
@@ -198,14 +198,14 @@ if DoT1W
     % Annotate T1
     if AnnotateT1W 
         disp('Annotate T1 masks')
-        Ind=cellfun(@(x) exist([WriteFolder PatientName '\T1W\' x '\'])~=0, Dates);
+        Ind=cellfun(@(x) exist([WriteFolder PatientName filesep 'T1W' filesep x filesep])~=0, Dates);
         I=1;
         for Date=Dates(Ind)  
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0 
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0 
                 f=0;
                 while f==0
                     try
-                        MakeAnnotationsTemplate([WriteFolder PatientName '\T1W\' Date{1} '\'],I);
+                        MakeAnnotationsTemplate([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep],I);
                         f=1;
                     catch 
                         disp(' ');disp('Error, try again.')
@@ -219,24 +219,24 @@ if DoT1W
     % Global Registration T1
     if GlobalRegisterT1W
         disp('Global Reg. T1')
-        if exist([WriteFolder PatientName '\T1W\'])~=0
+        if exist([WriteFolder PatientName filesep 'T1W' filesep])~=0
             I=1;
-            if ~exist([WriteFolder PatientName '\T1W\ImageTemplates.mat'])
+            if ~exist([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat'])
                 for Date=Dates
-                    if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
-                        ImageTemplate{I}=GetT1RegistrationTemplate([WriteFolder PatientName '\T1W\' Date{1} '\']);  
+                    if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
+                        ImageTemplate{I}=GetT1RegistrationTemplate([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep]);  
                     end
                     I=I+1;
                 end
                 ImageTemplate(cellfun(@isempty,ImageTemplate))=[];
-                save([WriteFolder PatientName '\T1W\ImageTemplates.mat'], 'ImageTemplate');
+                save([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat'], 'ImageTemplate');
             else
-                load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
+                load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
             end            
-            try, rmdir([WriteFolder PatientName '\T1W\Registered\'],'s');  end
-            try, rmdir([WriteFolder PatientName '\T1W\DateRegistered\'],'s');  end
-            try, rmdir([WriteFolder PatientName '\T1W\DateRegisteredLocal\'],'s');  end            
-            obj = MCC_cPatient([WriteFolder PatientName '\T1W\']);
+            try, rmdir([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep],'s');  end
+            try, rmdir([WriteFolder PatientName filesep 'T1W' filesep 'DateRegistered' filesep],'s');  end
+            try, rmdir([WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep],'s');  end            
+            obj = MCC_cPatient([WriteFolder PatientName filesep 'T1W' filesep]);
             for I=1:numel(obj.StudyDate)        % No register average DCE
                 obj.StudyDate(I).content(strcmp(obj.StudyDate(I).content,'DCEav'))=[];
             end          
@@ -247,45 +247,37 @@ if DoT1W
     if SpetialRegT1
         disp('Spetial registration T1w')
         SpetialGlobalRegistrationV3(WriteFolder,Dates,PatientName)
-        fid=fopen([WriteFolder PatientName '\T1W\Registered\SpetialRegT1.txt'],'w');
+        fid=fopen([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep 'SpetialRegT1.txt'],'w');
         fprintf(fid, 'True');
         fclose(fid);
     end
     % Local registration 
-    if LocalRegisterT1W
-        if ~strcmp(PCNAME,'PHYTM7M2') 
-            %delete(gcp('nocreate'))
-            %parpool(5);
-        end
+    if LocalRegisterT1W        
         disp('Local registration T1w')
-        load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
+        load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
         I=1;
         for Date=Dates    
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
-                VisualizeLocalRegistrationT1P3([WriteFolder PatientName '\T1W\' Date{1} '\Processed\Registered'],...
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
+                VisualizeLocalRegistrationT1([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep 'Processed' filesep 'Registered'],...
                     ImageTemplate{I},roiFactorT1, IncludeArteryLR);
                  I=I+1;
             end           
         end
-        fid=fopen([WriteFolder PatientName '\T1W\Registered\roiFactorT1.txt'],'w');
+        fid=fopen([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep 'roiFactorT1.txt'],'w');
         fprintf(fid, ['Artery: ' num2str(IncludeArteryLR) char(10) num2str(roiFactorT1)]);
         fclose(fid);
     end
     % Obtain T1 maps
-    if GetT1
-        if ~strcmp(PCNAME,'PHYTM7M2') 
-%             delete(gcp('nocreate'))
-%             parpool(10);
-        end
+    if GetT1        
         disp('Computing T1 maps')
         for Date=Dates
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
-                T1mapP3([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\'],[WriteFolder PatientName '\T1W\' Date{1} '\'],...
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
+                T1map([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep],[WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep],...
                     RefTiss, ScaleT1Ims, gammaT1, gammaM0, CorrectBiasBetweenSlices,AssumeT1s,AirTh,solver,Date{1},Dates,...
                     WriteFolder,PatientName,CorrectFA,WeightT1); 
             end
         end
-        fid=fopen([WriteFolder PatientName '\T1W\Registered\T1mapppingParameters.txt'],'w');
+        fid=fopen([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep 'T1mapppingParameters.txt'],'w');
         fprintf(fid, ['CorrectFA: ' num2str(CorrectFA) char(10) 'Scale: ' num2str(ScaleT1Ims) char(10)...
             'RefTiss: ' RefTiss char(10) 'Gammas: ' num2str(gammaT1) ', ' num2str(gammaM0) char(10)...
             'BiasCorrection: ' num2str(CorrectBiasBetweenSlices) char(10) 'AssumeT1: ' num2str(AssumeT1s) char(10)...
@@ -295,47 +287,43 @@ if DoT1W
     % Get Concentration maps
     if GetConc
         disp('Computing C(t)')
-        load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
+        load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
         I=1;
         for Date=Dates      
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\DCE_t=1\'])~=0   % 9/15/2020
-                [r,ContrastBrand]=Get_rContrast([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\'],ContrastBrand);
-                [Cons_NW_NL,Conds_NW_NL,Times]=GetConcentrationsP3([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\'],...
-                                    [WriteFolder PatientName '\T1W\' Date{1} '\'],r,ImageTemplate{I}, ScaleMo, AssumeT1sC, AssumeT1Artery);                 
-                save([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\Concentrations.mat'], 'Cons_NW_NL', 'Conds_NW_NL',...
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep 'DCE_t=1' filesep])~=0   
+                [r,ContrastBrand]=Get_rContrast([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep],ContrastBrand);
+                [Cons_NW_NL,Conds_NW_NL,Times]=GetConcentrations([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep],...
+                                    [WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep],r,ImageTemplate{I}, ScaleMo, AssumeT1sC, AssumeT1Artery);                 
+                save([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'Concentrations.mat'], 'Cons_NW_NL', 'Conds_NW_NL',...
                         'Times','r');
                 I=I+1;
             end
         end
-        save([WriteFolder PatientName '\T1W\Registered\AssumeT1sC.mat'],'AssumeT1sC')
-        fid=fopen([WriteFolder PatientName '\T1W\Registered\ConcentrationParameteres.txt'],'w');
+        save([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep 'AssumeT1sC.mat'],'AssumeT1sC')
+        fid=fopen([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep 'ConcentrationParameteres.txt'],'w');
         fprintf(fid,['ContrastBrand: ' ContrastBrand char(10) 'r: ' num2str(r) char(10) 'AssumedT1: ' num2str(AssumeT1sC)...
             char(10) 'AssumedT1 Artery: ' num2str(AssumeT1Artery)]);
         fclose(fid);
     end
     % Get DCE parametric Maps
-    if GetPar
-       if ~strcmp(PCNAME,'PHYTM7M2') 
-            delete(gcp('nocreate'))
-%             parpool(5);
-       end
+    if GetPar       
         disp('AUC maps')
         for Date=Dates 
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\DCE_t=1\'])~=0
-                AUC_NW=Get90sAUCP3([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\'],...
-                    [WriteFolder PatientName '\T1W\' Date{1} '\']);   
-                save([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\90sAUCs.mat'],...
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep 'DCE_t=1' filesep])~=0
+                AUC_NW=Get90sAUCP3([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep],...
+                    [WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep]);   
+                save([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep '90sAUCs.mat'],...
                     'AUC_NW');
                 close all force
             end
         end
         disp('Tofts maps')
         for Date=Dates  
-            if exist([WriteFolder PatientName '\T1W\' Date{1} '\DCE_t=1\'])~=0
-                Folder2=[WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\'];
+            if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep 'DCE_t=1' filesep])~=0
+                Folder2=[WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep];
                 [Vp_NW_NL,Ve_NW_NL,Kt_NW_NL]=GetKinetcisParametersP3(WriteFolder,Folder2,...
-                    [WriteFolder PatientName '\T1W\' Date{1} '\']);   
-                save([WriteFolder PatientName '\T1W\Registered\' Date{1} '\Local\Perfussion_Parameters_Maps.mat'],...
+                    [WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep]);   
+                save([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'Perfussion_Parameters_Maps.mat'],...
                     'Vp_NW_NL','Ve_NW_NL','Kt_NW_NL');
                 %close all force
             end

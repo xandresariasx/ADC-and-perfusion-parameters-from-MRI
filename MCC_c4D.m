@@ -2,7 +2,7 @@
 %
 %   Radiomics project: "Multi-parametric MRI (mpMRI) Analysis"
 %   Nicolas Georges Rognin, PhD
-%   2016-2018 © Moffitt Cancer Center
+%   2016-2018 ? Moffitt Cancer Center
 
 classdef MCC_c4D < handle
     
@@ -139,7 +139,7 @@ classdef MCC_c4D < handle
                         obj.content = MCC_SubFolderList(root);
                     end
                     % Location
-                    cellTxt = strsplit(root,'\');
+                    cellTxt = strsplit(root,filesep);
                     obj.name = cellTxt{end};
                     if numel(cellTxt)>4   % 9/29/2020
                         obj.InstituteID =  cellTxt{end-4};
@@ -561,7 +561,7 @@ classdef MCC_c4D < handle
             R=obj.vsRegistered_VOI1(1).GetCropVec(VOIx);
             Reg_ROI=zeros(size(obj.vsRegistered_VOI1(1).data));
             Reg_ROI(R{1},R{2},R{3}) = 1;
-            save([obj.root '\Processed\' ext '\roi.mat'],'Reg_ROI') 
+            save([obj.root filesep 'Processed' filesep ext filesep 'roi.mat'],'Reg_ROI') 
         end
                         
         %-----------------------------------------------------------------%
@@ -887,7 +887,7 @@ classdef MCC_c4D < handle
              bNew = 0;
             if ~exist('fid_csv')
                 fileN_csv = [ ...
-                    obj.root '\Processed\' ...
+                    obj.root filesep 'Processed' filesep...
                     obj.MakeFileName(MCC_eType.DICOM,MCC_eView.All,0) ...
                     '.csv' ];
                 fid_csv = fopen(fileN_csv,'wt+');
@@ -1190,9 +1190,9 @@ classdef MCC_c4D < handle
             eT = MCC_eType.Parametric;
             eV = MCC_eView.Axial;            
             fmt = 'png';
-            fld = [obj.root '\Processed'];
+            fld = [obj.root filesep 'Processed'];
             fn = [ ...
-                fld '\' ...
+                fld filesep ...
                 obj.MakeFileName(eT, eV) ...
                 'Tubes.' fmt];            
             capt = getframe(gcf);
@@ -1366,9 +1366,9 @@ classdef MCC_c4D < handle
             eT = MCC_eType.Parametric;
             eV = MCC_eView.Axial;            
             fmt = 'png';
-            fld = [obj.root '\Processed'];
+            fld = [obj.root filesep 'Processed'];
             fn = [ ...
-                fld '\' ...
+                fld filesep ...
                 obj.MakeFileName(eT, eV) ...
                 'Tubes.' fmt];            
             capt = getframe(gcf);
@@ -1535,7 +1535,7 @@ classdef MCC_c4D < handle
             % Create CSV file for FMX quantification
             % NGr 2016 09 12, 2016 10 04
             fileN_csv = [ ...
-                obj.root '\Processed\' ...
+                obj.root filesep 'Processed' filesep...
                 obj.MakeFileName(MCC_eType.Quantified,MCC_eView.All,0) ...
                 '.csv' ];
             fid_csv = fopen(fileN_csv,'wt+');
@@ -1601,16 +1601,16 @@ classdef MCC_c4D < handle
             % Update imaging modes (work in progress)
             % 2016 03 09
             for i=1:length(obj.content)
-                fld = [obj.root '\' obj.content{i}];
+                fld = [obj.root filesep obj.content{i}];
                 lst = dir(fld);
                 CD = cd;
                 if (length(lst)>2)
                     try
-                        file = [fld '\' lst(3).name];
+                        file = [fld filesep lst(3).name];
                         md = MCC_ReadMetadataDICOM(file);
                         obj.content{i} = md.SeriesDescription;
                     catch ME
-                        MCC_writeLog([CD '\log.txt'], ...
+                        MCC_writeLog([CD filesep 'log.txt'], ...
                             ME, file);
                         cd(CD);
                     end
@@ -1772,7 +1772,7 @@ classdef MCC_c4D < handle
                 if ~isempty(obj.maskReg)
                     vs(1).data = obj.maskReg;
                     vs(1).metadata{1}.SeriesDescription = 'maskReg';
-                    fld = [obj.root '\Processed\Mask'];
+                    fld = [obj.root filesep 'Processed' filesep 'Mask'];
                     % Cretate or remove content
                     if ~isdir(fld)
                         mkdir(fld);
@@ -1825,32 +1825,32 @@ classdef MCC_c4D < handle
                 switch eType
                     case MCC_eType.Original
                         fld= [...
-                            obj.root '\' ...
+                            obj.root filesep ...
                             obj.content{iVol} ...
                             ];
                     case MCC_eType.Segmented
                         if obj.IsVolSeqEmpty(eType);
                             % Read mode
                             sd = MCC_subdir([ ...
-                                obj.root '\Processed\' ...
+                                obj.root filesep 'Processed' filesep ...
                                 char(eType) ...
                                 ]);
                             for i=1:length(sd)
-                                cellTxt = strsplit(sd{i},'\');
+                                cellTxt = strsplit(sd{i},filesep);
                                 obj.contentSeg{i} = cellTxt{end};
                             end
                         end
                         s = obj.contentSeg{iVol};
                         fld= [...
-                            obj.root '\Processed\' ...
-                            char(eType) '\' ...
+                            obj.root filesep 'Processed' filesep ...
+                            char(eType) filesep ...
                             s ...
                             ];
                     otherwise
                         s=obj.vsOriginal(iVol).ImagingModeID;
                         fld= [...
-                            obj.root '\Processed\' ...
-                            char(eType) '\' ...
+                            obj.root filesep 'Processed' filesep...
+                            char(eType) filesep ...
                             s ...
                             ];
                 end
@@ -1858,11 +1858,11 @@ classdef MCC_c4D < handle
                 if eType == MCC_eType.Original
                     fld = obj.root;
                 else
-                    fld = [obj.root '\Processed\' char(eType)];
+                    fld = [obj.root filesep 'Processed' filesep char(eType)];
                 end
             end
             if nargin==4 && ~isempty(name)
-                fld = [fld '\' name];
+                fld = [fld filesep name];
             end
         end
         
@@ -1895,7 +1895,7 @@ classdef MCC_c4D < handle
             % NGR 2016 02 08
             iP = 6;
             obj.DisplayExeLine(iP);
-            save([obj.root '\MCC_c4D']);
+            save([obj.root filesep 'MCC_c4D']);
             obj.DisplayExeTime(iP);
         end
         
@@ -1912,7 +1912,7 @@ classdef MCC_c4D < handle
             % Generate DICOM mask
             bVolSeqReload = 0;
             for iVol=1:obj.GetNbObjects
-                scrFld = [obj.root '\' obj.content{iVol} '\RTSS'];
+                scrFld = [obj.root filesep obj.content{iVol} filesep 'RTSS'];
                 if isdir(scrFld)
                     MCC_Disp('Create masks ...');
                     % Mask loop
@@ -1921,9 +1921,9 @@ classdef MCC_c4D < handle
                         fname = d(i).name;
                         if ~strcmp(fname,'.') && ~strcmp(fname,'..')
                             % Load DICOM headers
-                            rtssfile = [scrFld '\' fname];
+                            rtssfile = [scrFld filesep fname];
                             rtssheader = MCC_ReadMetadataDICOM(rtssfile);
-                            path = [obj.root '\' obj.content{iVol}];
+                            path = [obj.root filesep obj.content{iVol}];
                             imageheaders = ...
                                 loadDicomImageInfo(...
                                 path, rtssheader.StudyInstanceUID);
@@ -3445,9 +3445,9 @@ classdef MCC_c4D < handle
             % NGR 2016 03 15
             if ~isempty(obj.root)
                 capt = getframe(fig);
-                fld = [obj.root '\Processed'];
+                fld = [obj.root filesep 'Processed'];
                 if ~isempty(subpath)
-                    fld = [fld '\' subpath];
+                    fld = [fld filesep subpath];
                 end                
                 if ~isdir(fld)
                     mkdir(fld);
@@ -3461,7 +3461,7 @@ classdef MCC_c4D < handle
                     str = obj.MakeFileName(eType, eView, iVol);
                 end                
                 fn = [ ...
-                    fld '\' ...
+                    fld filesep ...
                     str ...
                     '.' fmt];
                 imwrite(...
@@ -3541,9 +3541,9 @@ classdef MCC_c4D < handle
         function LoadWorkspace(obj)
             % Load workspace
             % NGR 2016 05 19
-            fld = [obj.root '\Processed'];
+            fld = [obj.root filesep 'Processed'];
             if isdir(fld)
-                fid = fopen([fld '\Workspace.txt'],'r');
+                fid = fopen([fld filesep 'Workspace.txt'],'r');
                 if fid~=-1
                     formatSpec = '%c';
                     A = fscanf(fid,formatSpec);
@@ -3573,11 +3573,11 @@ classdef MCC_c4D < handle
         function SaveWorkspace(obj)
             % Save workspace
             % NGR 2016 05 19
-            fld = [obj.root '\Processed'];
+            fld = [obj.root filesep 'Processed'];
             if ~isdir(fld)
                 mkdir(fld);
             end
-            fid = fopen([fld '\Workspace.txt'],'wt+');
+            fid = fopen([fld filesep 'Workspace.txt'],'wt+');
             % Organ
             str=['obj.eOrganCur = MCC_eOrgan.' char(obj.eOrganCur) ';'];
             fprintf(fid,'%s\n',str);
@@ -4538,7 +4538,7 @@ classdef MCC_c4D < handle
                         me.stack.name = 'GetDeltaZ';
                         me.stack.line = 0;
                         MCC_writeLog(...
-                            [cd '\log.txt'], me, obj.vsOriginal(iVol).root, 0);
+                            [cd filesep 'log.txt'], me, obj.vsOriginal(iVol).root, 0);
                         r = 0;
                         obj.bContiguous{iVol} = 0;
                     end
@@ -4811,7 +4811,7 @@ classdef MCC_c4D < handle
                                 tF(i,j,k) = obj.tform{1};
                             end
                         catch ME
-                            MCC_writeLog([cd '\log.txt'],ME, ...
+                            MCC_writeLog([cd filesep 'log.txt'],ME, ...
                                 ['(' tType{j} ' registration)' ...
                                 vsI(i).root]);
                         end
@@ -4905,7 +4905,7 @@ classdef MCC_c4D < handle
             %save(['IterationS8_' num2str(i) '.mat'])  
             % CSV file
             indF=strfind(obj.root, obj.InstituteID);
-            fileN_csv=[obj.root '\Registration.csv'];
+            fileN_csv=[obj.root filesep 'Registration.csv'];
             if exist(fileN_csv, 'file')
                 fid_csv = fopen(fileN_csv,'at+');
             else

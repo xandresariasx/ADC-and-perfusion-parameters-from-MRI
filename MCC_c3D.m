@@ -2,7 +2,7 @@
 %
 %   Radiomics project: "Multi-parametric MRI (mpMRI) Analysis"
 %   Nicolas Georges Rognin, PhD
-%   2016-2017 © Moffitt Cancer Center
+%   2016-2017 ? Moffitt Cancer Center
 % 5/30/2018
 
 
@@ -49,8 +49,8 @@ classdef MCC_c3D < handle
                 if ischar(root)
                     % Root
                     obj.root = root;
-                    cellTxt = strsplit(root,'\');
-                    if ~isempty(strfind(root,'\Processed\'))
+                    cellTxt = strsplit(root,filesep);
+                    if ~isempty(strfind(root,[filesep 'Processed' filesep]))
                         % Location
                         obj.name = cellTxt{end};
                         obj.InstituteID =  cellTxt{end-5};
@@ -78,7 +78,7 @@ classdef MCC_c3D < handle
                     for i=1:N
                         fname = d(i).name;
                         if ~strcmp(fname,'.') && ~strcmp(fname,'..')
-                            filename = [root '\' fname];
+                            filename = [root filesep fname];
                             CD = cd;
                             try
                                 info =  MCC_ReadMetadataDICOM(filename);
@@ -107,7 +107,7 @@ classdef MCC_c3D < handle
                     % DICOM header
                     obj.root = root;
                     obj.metadata{1} = MCC_ReadMetadataDICOM(...
-                        [obj.root '\' fileNames(1).imagename]);
+                        [obj.root filesep fileNames(1).imagename]);
                     if exist('obj.metadata{1}.SeriesDescription','var')==0  % 12/15/2021 In case SeriesDescription doesn't exist
                         obj.metadata{1}.SeriesDescription='';
                     end
@@ -137,7 +137,7 @@ classdef MCC_c3D < handle
                         try
                             obj.metadata{i} = ...
                                 MCC_ReadMetadataDICOM( ...
-                                [obj.root '\' fileNames(i).imagename]);
+                                [obj.root filesep fileNames(i).imagename]);
                             if exist('obj.metadata{i}.SeriesDescription','var')==0  % 12/15/2021 In case SeriesDescription doesn't exist
                                 obj.metadata{i}.SeriesDescription='';
                             end
@@ -145,7 +145,7 @@ classdef MCC_c3D < handle
                             if strfind(obj.metadata{i}.SeriesDescription,'mint Lesion') 
                                 % RGB countour to mask
                                 x0 = dicomread( ...
-                                    [obj.root '\' fileNames(i).imagename]);
+                                    [obj.root filesep fileNames(i).imagename]);
                                 NN = size(x0);
                                 roi = zeros([NN(1) NN(2)]);
                                 for l = 1:NN(1)
@@ -163,7 +163,7 @@ classdef MCC_c3D < handle
                                     % RGB data
                                     obj.dataRGB{j} = dicomread(...
                                         [ ...
-                                        obj.root '\' ...
+                                        obj.root filesep ...
                                         fileNames(i).imagename ...
                                         ]);
                                     j = j + 1 ;
@@ -180,10 +180,10 @@ classdef MCC_c3D < handle
                                 end
                             else
                                 obj.data(:,:,i) = dicomread( ...
-                                    [obj.root '\' fileNames(i).imagename]);
+                                    [obj.root filesep fileNames(i).imagename]);
                             end
                         catch ME
-                            MCC_writeLog([cd '\log.txt'],ME, obj.root);
+                            MCC_writeLog([cd filesep 'log.txt'],ME, obj.root);
                             obj.bLoadSuccess = 0;
                             return;
                         end
@@ -304,7 +304,7 @@ classdef MCC_c3D < handle
             if size(idx,2) > 1
                 c = find(idx(:,1)==1);
                 l = c(2)-1;
-                splt = strsplit(obj.root,'\');
+                splt = strsplit(obj.root,filesep);
                 for i = 1:size(idx,2)
                     R = idx(1:l,i);
                     % Slice #
@@ -315,13 +315,13 @@ classdef MCC_c3D < handle
                             mkdir(fld);
                         end
                         scrFile = char(obj.metadata{R(j)}.Filename);
-                        spltFN = strsplit(scrFile,'\'); filename = spltFN(end);
+                        spltFN = strsplit(scrFile,filesep); filename = spltFN(end);
                         dstFile = char(fullfile(fld, filename));
                         copyfile(scrFile, dstFile);
                     end
                 end
                 % Remove source folder
-                delete([obj.root '\*.*'])
+                delete([obj.root filesep '*.*'])
                 rmdir(obj.root);
             end
         end
@@ -591,8 +591,8 @@ classdef MCC_c3D < handle
                 if i>=100 && i<1000
                     s = num2str(i);
                 end
-                dstF = [pathIn '\' bfn s '.dcm'];
-                dstF = [pathIn '\' s '.dcm']; % Prostate, @NGR 2016 06 29
+                dstF = [pathIn filesep bfn s '.dcm'];
+                dstF = [pathIn filesep s '.dcm']; % Prostate, @NGR 2016 06 29
                 obj.metadata{i}.InstanceNumber = i;
                 %I = uint16(obj.data(:,:,i));
                 I = uint32(obj.data(:,:,i));    % 8/2
@@ -678,7 +678,7 @@ classdef MCC_c3D < handle
             for i =1:obj.GetNbSlices
                 dstF = ...
                     [MCC_GetDateFileFormat '_' ...
-                    pathIn '\' bfn num2str(i) '.jpg'];
+                    pathIn filesep bfn num2str(i) '.jpg'];
                 imwrite(uint8(v(:,:,i)),dstF,'jpg','Comment',dstF);
             end
         end
@@ -689,19 +689,19 @@ classdef MCC_c3D < handle
             d = dir(obj.root);
             d(~[d.isdir])= [];
             N = length(d);
-            x = strsplit(obj.root,'\');
-            root = strjoin(x(1:end-1),'\');
+            x = strsplit(obj.root,filesep);
+            root = strjoin(x(1:end-1),filesep);
             MCC_Disp('Convert masks ...');
             for i=1:N
                 fname = d(i).name;
                 if ~strcmp(fname,'.') && ~strcmp(fname,'..')
-                    fld = [obj.root '\' fname];
+                    fld = [obj.root filesep fname];
                     MCC_Disp(fld,5);
                     for i = 1:obj.GetNbSlices
-                        I = imread([fld '\' num2str(i) '.pgm']);
+                        I = imread([fld filesep num2str(i) '.pgm']);
                         obj.data(:,:,i) = 255*(I>0);
                     end
-                    dstFld = [root '\' fname];
+                    dstFld = [root filesep fname];
                     if ~isdir(dstFld)
                         mkdir(dstFld);
                     end

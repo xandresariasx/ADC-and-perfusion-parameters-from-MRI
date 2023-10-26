@@ -10,38 +10,38 @@ try, delete('Positions.mat'); end
 
 
 if exist('Template','var')~=0
-    Vol=ReadDcmFolder4([Folder Template '\']);
+    Vol=ReadDcmFolder4([Folder Template filesep]);
     Vol=Vol{1};
     aux=strsplit(Template,'_');
     Template2=strjoin({'b=450' aux{2:end}},'_');
     try
-        Vol2=ReadDcmFolder4([Folder Template2 '\']);
+        Vol2=ReadDcmFolder4([Folder Template2 filesep]);
         Vol2=Vol2{1};
     end
 else
-    if exist([Folder '\Processed\Registered\'])~=0
-        Files=dir([Folder '\Processed\Registered\']);
+    if exist([Folder filesep 'Processed' filesep 'Registered' filesep])~=0
+        Files=dir([Folder filesep 'Processed' filesep 'Registered' filesep]);
         FileNames={Files(:).name};
         aux=cellfun(@(x) contains(x,'DCE_t='), FileNames);
         if all(aux==0)  %9/14/2020
             aux=cellfun(@(x) contains(x,'T1W_Alpha=30_1'), FileNames);
         end
         FileNames=FileNames(aux);
-        Vols=cellfun(@(x) ReadDcmFolder4([Folder '\Processed\Registered\' x '\']),...
+        Vols=cellfun(@(x) ReadDcmFolder4([Folder filesep 'Processed' filesep 'Registered' filesep x filesep]),...
             FileNames);
         Vols=cat(4,Vols{:});
         Vol=mean(Vols,4);    
     else
-        Vol=ReadDcmFolder4([Folder 'DCEav\']);
+        Vol=ReadDcmFolder4([Folder 'DCEav' filesep]);
         Vol=Vol{1};
     end 
     Template='Average';
     try
-        aux=strsplit(Folder,'\');
+        aux=strsplit(Folder,filesep);
         aux2=cellfun(@isempty, aux);
         aux(aux2)=[];
-        load([strjoin(aux(1:end-2),'\') '\T1W\ImageTemplates.mat']);
-        Vol2=ReadDcmFolder4([Folder '\Processed\Registered\' ImageTemplate{I} '\']);
+        load([strjoin(aux(1:end-2),filesep) filesep 'T1W' filesep 'ImageTemplates.mat']);
+        Vol2=ReadDcmFolder4([Folder filesep 'Processed' filesep 'Registered' filesep ImageTemplate{I} filesep]);
         Vol2=Vol2{1};
         Template2=ImageTemplate{I};
     end
@@ -52,7 +52,7 @@ if exist('Vol2','var')
     figure('Name',Template2,'OuterPosition',[943   477   576   513]), imshow3DOverlayCont( Vol2, [],[],Folder,floor(size(Vol,3)/2),[],[],[])
 end
 
-aux=strsplit(Folder,'\');
+aux=strsplit(Folder,filesep);
 aux2=cellfun(@isempty, aux);
 aux(aux2)=[];
 if ~contains(Folder,'T1W')

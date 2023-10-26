@@ -11,7 +11,7 @@ end
 ImagesNames={Images(:).name};
 [~,Ind]=sort(cell2mat(cellfun(@(x) str2num(x(strfind(x,'=')+1:end)), ImagesNames,'UniformOutput' , false)));
 Images=Images(Ind);
-[Vols,Infs]=arrayfun(@(x) ReadDcmFolder4([x.folder '\' x.name '\']), Images);
+[Vols,Infs]=arrayfun(@(x) ReadDcmFolder4([x.folder filesep x.name filesep]), Images);
 
 if CombineAcqusitionAndTriggerTimes
     TrigTimes=cell2mat(cellfun(@(x) GetRealTime2(x{1}), Infs, 'UniformOutput', false));
@@ -50,7 +50,7 @@ VolsHalf=cellfun(@(x) x(:,:,floor(size(x,3)/2)), Vols2,'UniformOutput' , false);
 
 figure('Name','Intensity Vs. time'), 
 plot(TimesSec2,IsMed,'*-'), hold on, plot(TimesSec2(k),IsMed(k),'*r') 
-saveas(gcf,[FolderAux '\MeanIntensityVsTime.jpeg'])
+saveas(gcf,[FolderAux filesep 'MeanIntensityVsTime.jpeg'])
 
 k=find(cumsum(aux)==k);
 

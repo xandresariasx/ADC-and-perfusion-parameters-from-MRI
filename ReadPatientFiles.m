@@ -10,7 +10,7 @@ Files(aux)=[];
 FileNames={Files(:).name};
 FileFolders={Files(:).folder};
 
-FilesFolderNames=cellfun(@(x,y) [x '\' y], FileFolders, FileNames, 'UniformOutput', false);
+FilesFolderNames=cellfun(@(x,y) [x filesep y], FileFolders, FileNames, 'UniformOutput', false);
 
 Isdicoms=cellfun(@(x) isdicom(x), FilesFolderNames, 'UniformOutput', false);
 

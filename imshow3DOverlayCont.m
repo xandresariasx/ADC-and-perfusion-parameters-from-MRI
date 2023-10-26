@@ -144,8 +144,9 @@ end
 
 axes('position',[0,0.2,1,0.8]), imshow(squeeze(Img(:,:,S,:)), [Rmin Rmax])
 
-if exist([FolderMasks '\Masks.mat'],'file')
-    load([FolderMasks '\Masks.mat'])
+Locations=[];
+if exist([FolderMasks filesep 'Masks.mat'],'file')
+    load([FolderMasks filesep 'Masks.mat'])
      Colors={'r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c'};
     for I=1:length(Labels)
         Positions=PositionsPerLabel{I};
@@ -162,8 +163,7 @@ if exist([FolderMasks '\Masks.mat'],'file')
 end
 
 
-
-if exist('Locations')
+if ~isempty(Locations)
     hold on, plot(Locations(:,1),Locations(:,2),'r.')
 end
 FigPos = get(gcf,'Position');
@@ -249,8 +249,8 @@ set(gcf,'ResizeFcn', @figureResized)
                 set(aux2(I),'YData',[])
             end
             set(aux(end),'cdata',squeeze(Img(:,:,S,:)))
-            if exist([FolderMasks '\Masks.mat'],'file')
-                load([FolderMasks '\Masks.mat'])
+            if exist([FolderMasks filesep 'Masks.mat'],'file')
+                load([FolderMasks filesep 'Masks.mat'])
                 Colors={'r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c'};
                 for I=1:length(Labels)
                     Positions=PositionsPerLabel{I};
@@ -308,8 +308,8 @@ set(gcf,'ResizeFcn', @figureResized)
                 set(aux2(I),'YData',[])
             end
             set(aux(end),'cdata',squeeze(Img(:,:,S,:)))
-            if exist([FolderMasks '\Masks.mat'],'file')
-                load([FolderMasks '\Masks.mat'])
+            if exist([FolderMasks filesep 'Masks.mat'],'file')
+                load([FolderMasks filesep 'Masks.mat'])
                  Colors={'r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c','b','r','g','y','m','c'};
                 for I=1:length(Labels)
                     Positions=PositionsPerLabel{I};

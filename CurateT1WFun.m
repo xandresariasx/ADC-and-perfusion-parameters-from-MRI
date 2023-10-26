@@ -4,7 +4,7 @@ clc
 close all force
 disp(['Curating T1W Patient: ' PatientName ' Date: ' Date])
 try
-rmdir([WriteFolder PatientName '\T1W\' Date],'s')
+rmdir([WriteFolder PatientName filesep 'T1W' filesep Date],'s')
 end
  
 aux2=cellfun(@(x) ~isempty(regexpi(x,Folder_T1)),...
@@ -52,11 +52,11 @@ for I=1:length(Ut1)
                 for II=1:numel(InfosT1sIJ_II)
                     Instances=cellfun(@(x) x.InstanceNumber, InfosT1sIJ_II{II}, 'UniformOutput', false);               
                     [~,si]=sort(cell2mat(Instances));
-                    mkdir([WriteFolder PatientName '\T1W\' Date '\T1W_Alpha=' num2str(round(alpha))...
-                        '_' num2str(J+II-1) '\'])
+                    mkdir([WriteFolder PatientName filesep 'T1W' filesep Date filesep 'T1W_Alpha=' num2str(round(alpha))...
+                        '_' num2str(J+II-1) filesep])
                     for K=1:length(si)
-                        copyfile(InfosT1sIJ_II{II}{si(K)}.Filename,[WriteFolder PatientName '\T1W\' Date...
-                            '\T1W_Alpha=' num2str(round(alpha)) '_' num2str(J+II-1) '\' num2str(K) '.dcm'])
+                        copyfile(InfosT1sIJ_II{II}{si(K)}.Filename,[WriteFolder PatientName filesep 'T1W' filesep Date...
+                            filesep 'T1W_Alpha=' num2str(round(alpha)) '_' num2str(J+II-1) filesep num2str(K) '.dcm'])
                     end                    
                 end
             end
@@ -66,37 +66,11 @@ end
 
 % Visualize images, remove some if necesary
 
-Images=AdjustDirVariable(dir([WriteFolder PatientName '\T1W\' Date])); 
+Images=AdjustDirVariable(dir([WriteFolder PatientName filesep 'T1W' filesep Date])); 
 Images=Images([Images(:).isdir]);
 Images=Images(cell2mat(cellfun(@(x) contains(x,'T1W_Alpha='), {Images(:).name}, 'UniformOutput', false)));
-[Vols,Infs]=arrayfun(@(x) ReadDcmFolder4([x.folder '\' x.name '\']), Images);
-% 
-% Fig=figure('units','normalized','outerposition',[0 0 1 1],'Name','T1W Images'); colormap('gray')
-% MinsI=(cellfun(@(x) min(x(:)), Vols));
-% MaxsI=(cellfun(@(x) max(x(:)), Vols));
-% MinI=max(MinsI);
-% MaxI=min(MaxsI);
-% set (Fig, 'WindowKeyPressFcn', @KeyPressFcn);
-% cont=1;
-% global Stop
-% Stop=0;
-% while Stop==0 
-%     for I=1:length(Vols)
-%         if cont<=size(Vols{I},3)
-%             subplot(ceil(length(Vols)/4),4,I), imagesc(Vols{I}(:,:,cont),[MinI MaxI]) 
-%             axis equal, axis off
-%             title(['FA=' num2str(Infs{I}{1}.FlipAngle) ' TR=' num2str(Infs{I}{1}.RepetitionTime) ' (' num2str(I)...
-%                 ')' '  (Slice #: ' num2str(cont) ' )'],'Interpreter','none')
-%             axis equal
-%             axis off    
-%         end
-%     end
-%     pause(0.5)
-%     cont=cont+1;
-%     if cont>max(cellfun(@(x) size(x,3), Vols))
-%         cont=1;
-%     end
-% end
+[Vols,Infs]=arrayfun(@(x) ReadDcmFolder4([x.folder filesep x.name filesep]), Images);
+
 
 aux=combnk([1:numel(Vols)],2);
 RM=[];
@@ -111,24 +85,8 @@ end
 kdisc=unique([RM]);
 aux5=Images(kdisc);
 if ~isempty(aux5)
-    arrayfun(@(x) rmdir([x.folder '\' x.name '\'],'s'), aux5,'UniformOutput',false);    
+    arrayfun(@(x) rmdir([x.folder filesep x.name filesep],'s'), aux5,'UniformOutput',false);    
 end
-% for I=1:length(Vols)
-%     subplot(ceil(length(Vols)/4),4,I), imagesc(Vols{I}(:,:,floor(size(Vols{I},3)/2)),[MinI MaxI]) 
-%     if any(kdisc==I)
-%         title(['FA=' num2str(Infs{I}{1}.FlipAngle) ' TR=' num2str(Infs{I}{1}.RepetitionTime) '   (' num2str(I) ', REMOVED)'],'Interpreter','none')
-%     else
-%         title(['FA=' num2str(Infs{I}{1}.FlipAngle) ' TR=' num2str(Infs{I}{1}.RepetitionTime) '   (' num2str(I) ')'],'Interpreter','none')
-%     end
-%     axis equal
-%     axis off
-% end
-% savefig([WriteFolder PatientName '\T1W\' Date '\OriginalImgs'])
-% saveas(gcf,[WriteFolder PatientName '\T1W\' Date '\OriginalImgs.jpeg'])
-% 
-% fid=fopen([WriteFolder PatientName '\T1W\' Date '\DiscardedT1W.txt'],'w');
-% fprintf(fid, num2str(kdisc));
-% fclose(fid);
 
 
 

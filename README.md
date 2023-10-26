@@ -37,6 +37,8 @@ For T1-MRI and DCE-MRI data:
 
 - Ktrans, Vp, Ve maps at: {WriteFolder}\{Patient}\T1W\Registered\{Date}\Local\Perfussion_Parameters_Maps.mat
 
+-Registered maps across dates at: {WriteFolder}\{Patient}\T1W\DateRegisteredLocal\{Date}\Processed\Registered_VOI#\
+
 
 
 # Copyrights: 

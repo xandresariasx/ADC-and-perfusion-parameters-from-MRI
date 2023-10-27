@@ -1,5 +1,5 @@
 function T1map(Folder,FolderMask,RefTiss, ScaleT1Ims, gammaT1, gammaM0,...
-    CorrectBiasBetweenSlices, AssumeT1s, AirTh, solver,Date,Dates,WriteFolder,...
+    AssumeT1s, AirTh, solver,Date,Dates,WriteFolder,...
     PatientName,CorrectFA,WeightT1)
 
 if CorrectFA
@@ -14,39 +14,13 @@ Air=VolAvg/max(VolAvg(:))<AirTh;   % Air in the image
 Dates=Dates(cellfun(@(x) exist([WriteFolder PatientName filesep 'T1W' filesep x filesep])~=0,Dates));
 
 if ScaleT1Ims
-    if 1%strcmp(Date,Dates{1})
-        [Vols,Info, C30]=ReScaleT1ImagesV4(Folder, FolderMask, RefTiss);
-    else
-        try                                         % To use the same scaling factors as visit 1
-            [Vols,Info]=ReadVolsT1(Folder);
-        catch
-            CorrectTagsDicom(Folder);
-            [Vols,Info]=ReadVolsT1(Folder);
-        end
-        SD=load([WriteFolder PatientName filesep 'T1W' filesep 'Registered' filesep Dates{1} filesep 'Local' filesep 'ScalingData2.mat']); %,'Cs','AnglesD','trS')         
-        trS=cellfun(@(x) x{1}.RepetitionTime, Info)/1000;  
-        AnglesD=cellfun(@(x) x{1}.FlipAngle, Info);
-        [~,Order]=sort(AnglesD);
-        AnglesD=AnglesD(Order);
-        trS=trS(Order);   
-        Info=Info(Order);
-        Vols=Vols(Order);
-        if isequal(AnglesD,SD.AnglesD) && isequal(trS,SD.trS)
-            Vols=cellfun(@(x,y) x./y, Vols, num2cell(SD.Cs),'UniformOutput',false);
-            C30=SD.Cs;
-        else
-            [Vols,Info, C30]=ReScaleT1ImagesV4(Folder, FolderMask, RefTiss);
-        end   
-    end
+    [Vols,Info, C30]=ReScaleT1Images(Folder, FolderMask, RefTiss);
 else
     try
         [Vols,Info]=ReadVolsT1(Folder);
     catch
         CorrectTagsDicom(Folder);
         [Vols,Info]=ReadVolsT1(Folder);
-    end
-    if CorrectBiasBetweenSlices
-        Vols=cellfun(@(x) CorrectBiasBetweenSlicesF(x), Vols,'UniformOutput',false);
     end
     C30=1;
     ErrorOri=[]; val=[]; Method='Original';  RefTiss=[];
@@ -197,6 +171,7 @@ TableT1L={'Tissue',                      '1.5T',       '3T';...
            'aorta/vein/blood/artery',       1.4,        1.9};
        
 T1=ones(size(MaksPerLabel{1}));
+Labels=cellfun(@(x) erase(x,','),Labels,'UniformOutput',false);
 for I=1:numel(Labels)
     TI=find(contains(TableT1L(2:end,1), Labels{I},'IgnoreCase',true),1)+1;
     FI=find(strcmp(TableT1L(1,2:3),[num2str(FS) 'T']),1)+1;

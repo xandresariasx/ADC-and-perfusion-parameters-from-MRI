@@ -102,7 +102,7 @@ ylabel('Intensity'), xlabel('Time (s)'), title('Median Intensity Artery')
 
 t = timer('ExecutionMode', 'singleShot', 'StartDelay', 600, 'TimerFcn', @pressEnter);
 start(t);
-res = input('Enter steps to shift injection point (o):');
+res = input('Enter # of steps to shift injection point (o):');
 if isempty(res)
     res=0;
 end
@@ -246,6 +246,7 @@ TableT1L={'Tissue',                      '1.5T',       '3T';...
            'aorta/vein/blood/artery/BloodVessel',       1.4,        1.9};
        
 T1=ones(size(MaksPerLabel{1}));
+Labels=cellfun(@(x) erase(x,','),Labels,'UniformOutput',false);
 for I=1:numel(Labels)
     TI=find(cellfun(@(x) contains(Labels{I},x,'IgnoreCase',true) | ...
         contains(x,Labels{I},'IgnoreCase',true),TableT1L(2:end,1)))+1;

@@ -381,14 +381,14 @@ end
 % T1-DW registration
 if DoT1WDWIReg
     disp('T1-ADC registration')
-    try,rmdir([WriteFolder PatientName '\T1-DW Registered\'],'s');end
-    load([WriteFolder PatientName '\T1W\ImageTemplates.mat']);
-    load([WriteFolder PatientName '\DWI\Templates.mat']);
+    try,rmdir([WriteFolder PatientName filesep 'T1-DW Registered' filesep],'s');end
+    load([WriteFolder PatientName filesep 'T1W' filesep 'ImageTemplates.mat']);
+    load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
     I=1;
     Inds=logical(zeros(size(Dates)));
     for Date=Dates
         if ~isempty(LocalRegTemplate{I}) 
-            ADC=load([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\ADC.mat']);
+            ADC=load([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'ADC.mat']);
             if ~isempty(ADC.ADCav)
                 Inds(I)=1;
             end
@@ -398,26 +398,26 @@ if DoT1WDWIReg
     Ind=find(Inds,1);
     DatesDCE=cell(0);
     for Date=Dates
-        if exist([WriteFolder PatientName '\T1W\' Date{1} '\'])~=0
+        if exist([WriteFolder PatientName filesep 'T1W' filesep Date{1} filesep])~=0
             DatesDCE{end+1}= Date{1};    
         end
     end
     IndDCE=find(contains(DatesDCE,Dates{Ind}),1);
-    MoveFilesForDWT1RegistrationV2([WriteFolder PatientName],Dates(Inds),...
+    MoveFilesForDWT1Registration([WriteFolder PatientName],Dates(Inds),...
         LocalRegTemplate{Ind},ImageTemplate{IndDCE},RotateViewDW)
-    obj = MCC_cPatient([WriteFolder PatientName '\T1-DW Registered\']);
+    obj = MCC_cPatient([WriteFolder PatientName filesep 'T1-DW Registered' filesep]);
     obj.Register_Date({LocalRegTemplate{Ind} ImageTemplate{IndDCE}},'T1W',...
        {'none'}); %{'none','rigid','similarity','affine'});
     MoveFilesForDWT1LocalRegistration([WriteFolder PatientName],Dates(Inds),...
         LocalRegTemplate{Ind},ImageTemplate{IndDCE})
     VOI=GenerateVOIforLocalDateRegistration([WriteFolder PatientName],...
-        [WriteFolder PatientName '\T1W\' Dates{Ind} '\'],...
-        [WriteFolder PatientName '\T1W\DateRegisteredLocal\' Dates{Ind}], ImageTemplate{IndDCE},roiFactorLT1DW);   
-    obj = MCC_cPatient([WriteFolder PatientName '\T1-DW Registered\']);
+        [WriteFolder PatientName filesep 'T1W' filesep Dates{Ind} filesep],...
+        [WriteFolder PatientName filesep 'T1W' filesep 'DateRegisteredLocal' filesep Dates{Ind}], ImageTemplate{IndDCE},roiFactorLT1DW);   
+    obj = MCC_cPatient([WriteFolder PatientName filesep 'T1-DW Registered' filesep]);
     obj.Register_Date_Local({'TumorSegmentationDW' 'TumorSegmentationT1'},'T1W',...
         {'none','rigid','similarity','affine'},VOI);
     
-    fid=fopen([WriteFolder PatientName '\T1-DW Registered\RegistrationParameters.txt'],'w');
+    fid=fopen([WriteFolder PatientName filesep 'T1-DW Registered' filesep 'RegistrationParameters.txt'],'w');
     fprintf(fid, ['ROI Factor: ' num2str(roiFactorLT1DW)]);
     fclose(fid);
 end

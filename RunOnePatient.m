@@ -1,6 +1,6 @@
 % Input patient ID and select options to process images
 clear all
-Folder='/home/visual/aarias/Downloads/';            % Folder with raw images
+Folder='Raw/';            % Folder with raw images
 WriteFolder='Images/';          % Folder to write processed data
 Patient='101-002-114';            % Select patient ID (see paper for available IDs).                                                           
     

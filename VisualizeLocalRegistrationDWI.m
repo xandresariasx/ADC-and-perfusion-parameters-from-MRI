@@ -1,32 +1,38 @@
 function VisualizeLocalRegistrationDWI(Folder,LocalRegTemplates,LocalRegTemplate,roiFactor)
 % Function to perform local registration around tumor in DW-MRI data
 
-try, rmdir([Folder '\Processed\'], 's'); end
-try, rmdir([Folder '\Tmp\'], 's'); end
+try, rmdir([Folder filesep 'Processed' filesep], 's'); end
+try, rmdir([Folder filesep 'Tmp' filesep], 's'); end
 ImagesR=AdjustDirVariable(dir(Folder)); 
 ImagesR=ImagesR([ImagesR(:).isdir]);
 aux=strcmp({ImagesR(:).name},'Processed');
 ImagesR(aux)=[];
-aux=strsplit(Folder,'\');
+aux=strsplit(Folder,filesep);
 aux(cellfun(@isempty, aux))=[];
-Folder2=strjoin(aux(1:end-1),'\');
-try, rmdir([Folder2 '\Local\'], 's'); end
+Folder2=strjoin(aux(1:end-1),filesep);
+try, rmdir([Folder2 filesep 'Local' filesep], 's'); end
 
 Names={ImagesR(:).name};
-if roiFactor==0   % 1/21/2022 in case roi=0
-    cellfun(@(x) copyfile([Folder x], [Folder2 '\Local\' x]),...
+if roiFactor==0   
+    cellfun(@(x) mkdir([Folder2 filesep 'Local' filesep x]),...
+        Names)
+    cellfun(@(x) copyfile([Folder x], [Folder2 filesep 'Local' filesep x]),...
         Names)
     return
 end
 
 aux=cellfun(@(x) strsplit(x,'_'), Names,'UniformOutput', false);
 aux2=cellfun(@(x) x(end), aux);
-mkdir([Folder 'Tmp\'])
+mkdir([Folder 'Tmp' filesep])
 for I=unique(aux2)
     I=I{1};
-    cellfun(@(x) copyfile([Folder x], [Folder 'Tmp\' I '\' x]),...
+    cellfun(@(x) mkdir([Folder 'Tmp' filesep I filesep x]),...
         Names(strcmp(aux2,I)))
-    cellfun(@(x) copyfile([Folder x], [Folder 'Tmp\' I '\Processed\Registered\' x]),...
+    cellfun(@(x) copyfile([Folder x], [Folder 'Tmp' filesep I filesep x]),...
+        Names(strcmp(aux2,I)))
+    cellfun(@(x) mkdir([Folder 'Tmp' filesep I filesep 'Processed' filesep 'Registered' filesep x]),...
+        Names(strcmp(aux2,I)))
+    cellfun(@(x) copyfile([Folder x], [Folder 'Tmp' filesep I filesep 'Processed' filesep 'Registered' filesep x]),...
         Names(strcmp(aux2,I)))
 end
 
@@ -38,13 +44,13 @@ for I=unique(aux2)
     LocalRegTemplates(str2num(I))=aux3(strcmp(aux4,LocalRegTemplates{str2num(I)}));
 end
 
-[~,Infos]=ReadDcmFolder4([Folder Names{1} '\']);
+[~,Infos]=ReadDcmFolder4([Folder Names{1} filesep]);
 
 VOI=GenerateVOIforLocalDateRegistration([],...
         Folder,...
         [], [],roiFactor,Infos{1}{1});
     
-obj = MCC_cPatient([Folder 'Tmp\']);
+obj = MCC_cPatient([Folder 'Tmp' filesep]);
 
 obj.Register_Date_Local(LocalRegTemplates,...
     aux2(strcmp(Names,LocalRegTemplate)),...
@@ -52,15 +58,17 @@ obj.Register_Date_Local(LocalRegTemplates,...
         
  for I=unique(aux2)
     I=I{1};
-    cellfun(@(x) copyfile([Folder 'Tmp\' I '\Processed\Registered_VOI' num2str(numel(VOI)) '\' x],...
-        [Folder2 '\Local\' x]),...
+    cellfun(@(x) mkdir([Folder2 filesep 'Local' filesep x]),...
+        Names(strcmp(aux2,I)))
+    cellfun(@(x) copyfile([Folder 'Tmp' filesep I filesep 'Processed' filesep 'Registered_VOI' num2str(numel(VOI)) filesep x],...
+        [Folder2 filesep 'Local' filesep x]),...
         Names(strcmp(aux2,I)))
  end
         
 %try, rmdir([Folder '\Tmp\'], 's'); end
  
-VolsGR=cellfun(@(x) ReadDcmFolder4([Folder2 '\Global\' x '\']), Names);
-[VolsR,InfosLR]=cellfun(@(x) ReadDcmFolder4([Folder2 '\Local\' x '\']), Names);
+VolsGR=cellfun(@(x) ReadDcmFolder4([Folder2 filesep 'Global' filesep x filesep]), Names);
+[VolsR,InfosLR]=cellfun(@(x) ReadDcmFolder4([Folder2 filesep 'Local' filesep x filesep]), Names);
 
 for I=1:length(VolsR)
     VolsR{I}(VolsR{I}==0)=VolsGR{I}(VolsR{I}==0);

@@ -27,7 +27,7 @@ for Scan=ScanNum
     else
         Vol=[];Info=[];    % 11/30/2020  this wasn't initialized before
         for I=1:length(FilesScanNum)
-            [Vol{I},Info{I}]=ReadDcmFolder3([Folder FilesScanNum(I).name '\']);
+            [Vol{I},Info{I}]=ReadDcmFolder3([Folder FilesScanNum(I).name filesep]);
             Vol{I}=Vol{I}{1}; Info{I}=Info{I}{1};
         end
         Vols=cat(4,Vol{:});
@@ -52,7 +52,7 @@ end
 ADC(cellfun(@isempty,ADC))=[];
 ADCav=cat(4,ADC{:});
 ADCav=mean(ADCav,4);
-save([Folder '\ADC.mat'],'ADC','ADCav')
+save([Folder filesep 'ADC.mat'],'ADC','ADCav')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

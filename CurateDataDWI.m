@@ -4,8 +4,8 @@ function CurateDataDWI(WriteFolder,Infos,SeriesDescription,PatientName,Date,Fold
 clc
 disp(['Curating DW Patient: ' PatientName ' Date: ' Date])
 try
-        rmdir([WriteFolder PatientName '\DWI\' Date '\'],'s');
-        rmdir([WriteFolder PatientName '\DWI\Registered\' Date '\'],'s');
+        rmdir([WriteFolder PatientName filesep 'DWI' filesep Date filesep],'s');
+        rmdir([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date filesep],'s');
 end
 
 aux2=cellfun(@(x) ~isempty(regexpi(x,FolderDWI)),...
@@ -32,7 +32,7 @@ for I=1:length(Ut1)
     try
         SNames=cellfun(@(x) x.SequenceName, InfosDWIsI, 'UniformOutput', false);
         [USNames,~,ISNames]=unique(SNames);    
-        bs=cellfun(@(x) x(regexpi(x,'\d')), USNames, 'UniformOutput', false); 
+        bs=cellfun(@(x) x(regexpi(x, '\d')), USNames, 'UniformOutput', false); 
         if isempty(bs{1})
             GenerateError=1/bs;   % Force error in case bs is empty
         end
@@ -59,7 +59,7 @@ for I=1:length(Ut1)
     end
     if numel(unique(cell2mat(Instances)))~=numel(cell2mat(Instances))
         aux=cellfun(@(x) x.Filename, InfosDWIsI,'UniformOutput',false);
-        aux=cellfun(@(x) strsplit(x,'\'), aux,'UniformOutput',false);
+        aux=cellfun(@(x) strsplit(x,filesep), aux,'UniformOutput',false);
         aux=cellfun(@(x) strsplit(x{end},'-'), aux,'UniformOutput',false);
         aux=cellfun(@(x) x{2}, aux, 'UniformOutput',false);
         Vols=[];
@@ -108,36 +108,36 @@ for I=1:length(Ut1)
     
     % Create folders curated images
     for J=1:length(b0s)
-        mkdir([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\']);
-        mkdir([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\0_' num2str(J) '\']);
+        mkdir([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep '0_' num2str(J)  filesep]);
+        mkdir([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep 'Processed' filesep 'Registered' filesep '0_' num2str(J) filesep]);
         InfosJ=InfosDWIsI(b0s(J)==ids);
         for K=1:length(InfosJ)
-            aux3=strsplit(InfosJ{K}.Filename,'\');        
-            copyfile(InfosJ{K}.Filename,[WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\' aux3{end}])
+            aux3=strsplit(InfosJ{K}.Filename,filesep);        
+            copyfile(InfosJ{K}.Filename,[WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep '0_' num2str(J)  filesep aux3{end}])
         end 
-        copyfile([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\0_' num2str(J)  '\'],...
-            [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\0_' num2str(J)  '\'])
+        copyfile([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep '0_' num2str(J)  filesep],...
+            [WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep 'Processed' filesep 'Registered' filesep '0_' num2str(J)  filesep])
     end
     for J=1:length(bN0s)
-        mkdir([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\']);
-        mkdir([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\' Bfact '_' num2str(J)  '\']);
+        mkdir([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep Bfact '_' num2str(J)  filesep]);
+        mkdir([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep 'Processed' filesep 'Registered' filesep Bfact '_' num2str(J)  filesep]);
         InfosJ=InfosDWIsI(bN0s(J)==ids);
         for K=1:length(InfosJ)
-            aux3=strsplit(InfosJ{K}.Filename,'\');        
-            copyfile(InfosJ{K}.Filename,[WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\' aux3{end}])
+            aux3=strsplit(InfosJ{K}.Filename,filesep);        
+            copyfile(InfosJ{K}.Filename,[WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep Bfact '_' num2str(J)  filesep aux3{end}])
         end   
-        copyfile([WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\' Bfact '_' num2str(J)  '\'],...
-            [WriteFolder PatientName '\DWI\' Date '\b=' Bfact '_' num2str(I) '\Processed\Registered\' Bfact '_' num2str(J)  '\'])
+        copyfile([WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep Bfact '_' num2str(J)  filesep],...
+            [WriteFolder PatientName filesep 'DWI' filesep Date filesep 'b=' Bfact '_' num2str(I) filesep 'Processed' filesep 'Registered' filesep Bfact '_' num2str(J)  filesep])
     end   
 end
 
 % Visualize images, remove some if necesary
-Foldersb=AdjustDirVariable(dir([WriteFolder PatientName '\DWI\' Date])); 
-aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder '\' x.name ])), Foldersb,'UniformOutput',false);    
+Foldersb=AdjustDirVariable(dir([WriteFolder PatientName filesep 'DWI' filesep Date])); 
+aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder filesep x.name ])), Foldersb,'UniformOutput',false);    
 aux2=vertcat(aux{:});    
 aux3=arrayfun(@(x) strcmp(x.name,'Processed'), aux2);
 aux2(aux3)=[];    
-aux4=arrayfun(@(x) ReadDcmFolder4([x.folder '\' x.name '\']), aux2);
+aux4=arrayfun(@(x) ReadDcmFolder4([x.folder filesep x.name filesep]), aux2);
 aux=combnk([1:numel(aux4)],2);
 RM=[];
 for I=1:size(aux,1)

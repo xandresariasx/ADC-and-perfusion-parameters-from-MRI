@@ -2,7 +2,7 @@ function [Templates,TemplateDate,LocalRegTemplate]=GetDW_RegistrationTemplates(F
 
 Foldersb=AdjustDirVariable(dir(Folder));
 Foldersb=Foldersb([Foldersb(:).isdir]);
-aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder '\' x.name])), Foldersb,'UniformOutput',false);  
+aux=arrayfun(@(x) AdjustDirVariable(dir([x.folder filesep x.name])), Foldersb,'UniformOutput',false);  
 if isempty(aux)
     Templates=[];TemplateDate=[];LocalRegTemplate=[];
     return

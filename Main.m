@@ -47,29 +47,29 @@ end
 if DoDWI
     % Curate DW-MRI    
     if CurateDWI
-        try, rmdir([WriteFolder PatientName '\DWI\'],'s');  end         
+        try, rmdir([WriteFolder PatientName filesep 'DWI' filesep],'s');  end         
         I=1;
         for Date=Dates
             CurateDataDWI(WriteFolder, Infos{I},SeriesDescription{I},PatientName,Date{1},FolderDWI);
-            [Templates{I},TemplateDate{I},LocalRegTemplate{I}]=GetDW_RegistrationTemplates([WriteFolder PatientName '\DWI\' Date{1}]);
+            [Templates{I},TemplateDate{I},LocalRegTemplate{I}]=GetDW_RegistrationTemplates([WriteFolder PatientName filesep 'DWI' filesep Date{1}]);
             I=I+1;
         end
-        if exist([WriteFolder PatientName '\DWI\'])~=0
-            save([WriteFolder PatientName '\DWI\Templates.mat'], 'LocalRegTemplate', 'TemplateDate', 'Templates');
+        if exist([WriteFolder PatientName filesep 'DWI' filesep])~=0
+            save([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat'], 'LocalRegTemplate', 'TemplateDate', 'Templates');
         end
     end       
     % Global Register DW-MRI  
     if GlobalRegisterDWI  
         disp('Global Reg. ADC')
         I=1;
-        if exist([WriteFolder PatientName '\DWI\\Templates.mat'])~=0
-            load([WriteFolder PatientName '\DWI\\Templates.mat']);
+        if exist([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat'])~=0
+            load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
             for Date=Dates  
                 if ~isempty(TemplateDate{I})
-                    obj = MCC_cPatient([WriteFolder PatientName '\DWI\' Date{1}]);
+                    obj = MCC_cPatient([WriteFolder PatientName filesep 'DWI' filesep Date{1}]);
                     obj.Register_Date(Templates{I},TemplateDate{I}, {'none','rigid','similarity','affine'});
                     clear obj
-                    OrganizeRegisteredDWI([WriteFolder PatientName '\DWI\' Date{1}],WriteFolder) 
+                    OrganizeRegisteredDWI([WriteFolder PatientName filesep 'DWI' filesep Date{1}],WriteFolder) 
                 end
                 I=I+1;
             end
@@ -78,15 +78,15 @@ if DoDWI
     % Annotate DWI
     if AnnotateDWI
         disp('Annotation ADC')
-        if exist([WriteFolder PatientName '\DWI\\Templates.mat'])~=0
-            load([WriteFolder PatientName '\DWI\Templates.mat']);
+        if exist([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat'])~=0
+            load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
             I=1;
             for Date=Dates 
                 if ~isempty(TemplateDate{I})
                     f=0;
                     while f==0
                         try              
-                            MakeAnnotationsTemplate([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],I,LocalRegTemplate{I});
+                            MakeAnnotationsTemplate([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Global' filesep],I,LocalRegTemplate{I});
                             f=1;
                         catch
                             disp('Error try again')
@@ -102,16 +102,16 @@ if DoDWI
     if LocalRegisterDWI   
         disp('Local Reg. ADC')
         I=1;
-        if exist([WriteFolder PatientName '\DWI\Templates.mat'])~=0
-            load([WriteFolder PatientName '\DWI\Templates.mat']);
+        if exist([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat'])~=0
+            load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
             for Date=Dates   
-                if exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'])~=0
-                    VisualizeLocalRegistrationDWIP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Global\'],...
+                if exist([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Global' filesep])~=0
+                    VisualizeLocalRegistrationDWI([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Global' filesep],...
                         Templates{I},LocalRegTemplate{I},roiFactorDW)
                 end
                 I=I+1;
             end
-            fid=fopen([WriteFolder PatientName '\DWI\Registered\roiFactorDW.txt'],'w');
+            fid=fopen([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep 'roiFactorDW.txt'],'w');
             fprintf(fid, num2str(roiFactorDW));
             fclose(fid);
         end
@@ -121,21 +121,21 @@ if DoDWI
         disp('Computing ADC maps')
         I=1;
         for Date=Dates
-            ADCMAPP3V2([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\'])            
+            ADCMAP([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep])            
             I=I+1;
         end
     end
     % Global Date registration
     if GlobalDateRegisterDWI 
         disp('Global Date registration ADC')
-        try, rmdir([WriteFolder PatientName '\DWI\DateRegistered\'],'s'); end
-        load([WriteFolder PatientName '\DWI\Templates.mat']);
+        try, rmdir([WriteFolder PatientName filesep 'DWI' filesep 'DateRegistered' filesep],'s'); end
+        load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
         I=1;
         Ind=logical(zeros(size(Dates)));
         for Date=Dates
             if ~isempty(LocalRegTemplate{I}) &...
-                    exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\ADC.mat'])
-                ADC=load([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\ADC.mat']);
+                    exist([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'ADC.mat'])
+                ADC=load([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'ADC.mat']);
                 if ~isempty(ADC.ADCav)
                     MoveFilesForDateRegistrationDW([WriteFolder PatientName],Date{1},LocalRegTemplate{I})
                     Ind(I)=1;
@@ -143,7 +143,7 @@ if DoDWI
             end
             I=I+1;
         end
-        obj = MCC_cPatient([WriteFolder PatientName '\DWI\DateRegistered\']);
+        obj = MCC_cPatient([WriteFolder PatientName filesep 'DWI' filesep 'DateRegistered' filesep]);
         obj.Register_Date(LocalRegTemplate(Ind),obj.content{1},...
             {'none','rigid','similarity','affine'});
         MetaCorrectionDW([WriteFolder PatientName],Dates(Ind))
@@ -151,14 +151,14 @@ if DoDWI
     % Local Date registration
     if LocalDateRegisterDWI 
         disp('Local Date registration ADC')
-        try, rmdir([WriteFolder PatientName '\DWI\DateRegisteredLocal\'],'s'); end
-        load([WriteFolder PatientName '\DWI\Templates.mat']);
+        try, rmdir([WriteFolder PatientName filesep 'DWI' filesep 'DateRegisteredLocal' filesep],'s'); end
+        load([WriteFolder PatientName filesep 'DWI' filesep 'Templates.mat']);
         I=1;
         Inds=logical(zeros(size(Dates)));
         for Date=Dates
             if ~isempty(LocalRegTemplate{I}) &...
-                    exist([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\ADC.mat'])
-                ADC=load([WriteFolder PatientName '\DWI\Registered\' Date{1} '\Local\ADC.mat']);
+                    exist([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'ADC.mat'])
+                ADC=load([WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Date{1} filesep 'Local' filesep 'ADC.mat']);
                 if ~isempty(ADC.ADCav)
                     MoveFilesForLocalDateRegistrationDW([WriteFolder PatientName],Date{1},LocalRegTemplate{I})
                     Inds(I)=1;
@@ -168,9 +168,9 @@ if DoDWI
         end
         Ind=find(Inds,1);
         VOI=GenerateVOIforLocalDateRegistration([WriteFolder PatientName],...
-            [WriteFolder PatientName '\DWI\Registered\' Dates{Ind} '\Global\'],...
-            [WriteFolder PatientName '\DWI\DateRegisteredLocal\' Dates{Ind}], LocalRegTemplate{Ind},roiFactorLDW);
-        obj = MCC_cPatient([WriteFolder PatientName '\DWI\DateRegisteredLocal\']);
+            [WriteFolder PatientName filesep 'DWI' filesep 'Registered' filesep Dates{Ind} filesep 'Global' filesep],...
+            [WriteFolder PatientName filesep 'DWI' filesep 'DateRegisteredLocal' filesep Dates{Ind}], LocalRegTemplate{Ind},roiFactorLDW);
+        obj = MCC_cPatient([WriteFolder PatientName filesep 'DWI' filesep 'DateRegisteredLocal' filesep]);
         if UseSegmentationForLocalRegDWI
             obj.Register_Date_Local(cellstr(repmat('TumorSegmentationDW',[sum(Inds),1]))',Dates{Ind},...
                 {'none','rigid','similarity','affine'},VOI);
@@ -178,7 +178,7 @@ if DoDWI
             obj.Register_Date_Local(LocalRegTemplate(Inds),Dates{Ind},...
                 {'none','rigid','similarity','affine'},VOI);
         end
-        fid=fopen([WriteFolder PatientName '\DWI\DateRegisteredLocal\roiFactorLDW.txt'],'w');
+        fid=fopen([WriteFolder PatientName filesep 'DWI' filesep 'DateRegisteredLocal' filesep 'roiFactorLDW.txt'],'w');
         fprintf(fid, [num2str(UseSegmentationForLocalRegDWI) ' ' num2str(roiFactorLDW)]);
         fclose(fid);
     end

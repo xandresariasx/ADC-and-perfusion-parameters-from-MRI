@@ -1,5 +1,9 @@
 # ADC-and-perfusion-parameters-from-MRI
-These scripts are intended to reproduce the results of the paper: Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors". It generates ADC maps from DW-MRI data; T1 maps from T1-MRI; and Ktrans; Vp, Ve, iAUC maps from DCE-MRI.
+These scripts are intended to reproduce the results of the paper: 
+
+Arias-Lorza, A.M., Costello, J.R., Hingorani, S.R., Von Hoff, D.D., Korn, R.L., Raghunand, N. Magnetic resonance imaging of tumor response to stroma-modifying pegvorhyaluronidase alpha (PEGPH20) therapy in early-phase clinical trials. Sci Rep 14, 11570 (2024). https://doi.org/10.1038/s41598-024-62470-9
+
+It generates ADC maps from DW-MRI data; T1 maps from T1-MRI; and Ktrans; Vp, Ve, iAUC maps from DCE-MRI.
 
 # Requirements: 
 Matlab R2017b or above.

@@ -48,9 +48,9 @@ For T1-MRI and DCE-MRI data:
 # Copyrights: 
 If part of this code is used in your work, please cite:
 
-Arias et al. "Magnetic Resonance Imaging of Tumor Microenvironmental Response to Pegvorhyaluronidase alpha (PEGPH20) in Patients with Advanced Solid Tumors"
+Arias-Lorza, A.M., Costello, J.R., Hingorani, S.R., Von Hoff, D.D., Korn, R.L., Raghunand, N. Magnetic resonance imaging of tumor response to stroma-modifying pegvorhyaluronidase alpha (PEGPH20) therapy in early-phase clinical trials. Sci Rep 14, 11570 (2024). https://doi.org/10.1038/s41598-024-62470-9
 
 If the T1 mapping is also used, also cite:
 
-Sandmann Constantin, Hodneland Erlend,Modersitzki Jan. A practical guideline for T1 reconstruction from various flip angles in MRI Journal of Algorithms & Computational
-Technology. 2016
+Sandmann Constantin, Hodneland Erlend,Modersitzki Jan. A practical guideline for T1 reconstruction from various flip angles in MRI. Journal of Algorithms & Computational
+Technology (2016).
